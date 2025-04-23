@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+  }
+body{
+    background: linear-gradient(to bottom right, #baf8fe, #d9cdff, #fccee5);
+}
+#ch{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    margin-top: 20px;
+}
+#clubs{
+    background-color: rgb(207, 255, 202);
+}
+#anno{
+    background-color: rgb(255, 206, 206);
+}
+#events{
+    background-color: rgb(255, 255, 202);
+}

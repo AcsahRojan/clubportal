@@ -1,0 +1,10 @@
+#b{
+    background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
+}
+#lpassword, #lemail{
+    background-color:lavender;
+}
+#logcont{
+    background: linear-gradient(to bottom right, #baf8fe, #d9cdff, #fccee5);
+    
+}
