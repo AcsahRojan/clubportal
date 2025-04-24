@@ -9,7 +9,7 @@ import{
     Container,
     Paper,CircularProgress
 } from '@mui/material'
-import { useNavigate} from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 import './Login.css'
 
 const Login = () => {
@@ -59,19 +59,28 @@ const onSubmit = async (data)=>{
 };
 
 return (
-    <>
-    
-    <Container maxWidth='xs' sx={{
+    <>   
+    <Container maxWidth="xs"  sx={{
         height: "100vh", 
-        display: "flex",
+        display: "grid",
         justifyContent: "center", 
         alignItems: "center",     
       }}>
-        <Paper elevation={3} sx={{p:4,mt:4,mb:4}} id='logcont'>
+        
+        <Paper elevation={3} sx={{p:4}} id='logcont'>
+        <div style={{ textAlign: 'center' }}>
+        <Typography variant='h4'>Welcome to the Club!</Typography>
+        
+       
+              <Typography variant="caption">Since 2025</Typography>
+           </div>
+
+     
             <Box sx={{
                 display:"flex",
                 flexDirection:"column",
                 alignItems:'center',
+                
             }}>
                 <Typography component='h1' variant="h5" gutterBottom>
                     Log In
@@ -130,6 +139,9 @@ return (
                     disabled={loading}>
                         {loading ? 'Logging in...' : 'Log In'}
                     </Button>
+                    <div style={{ textAlign: 'center' }}>
+                    <Link style={{textDecoration:"none",textAlign:"center"}}>Forgot password?</Link>
+                    </div>
                 </Box>
             </Box>
         </Paper>

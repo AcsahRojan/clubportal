@@ -47,7 +47,7 @@ const Enrollment = () => {
             className='enrollinput'
             {...register("name", { required: true })}
           />
-          <br /><br /><br />
+         
           
           <TextField
             id="rollNo"
@@ -56,7 +56,7 @@ const Enrollment = () => {
             className='enrollinput'
             {...register("rollNo", { required: true })}
           />
-          <br /><br /><br />
+         
 
           <TextField
             id="department"
@@ -65,7 +65,7 @@ const Enrollment = () => {
             className='enrollinput'
             {...register("department", { required: true })}
           />
-          <br /><br /><br />
+          
 
           <TextField
             id="contactNumber"
@@ -74,7 +74,7 @@ const Enrollment = () => {
             className='enrollinput'
             {...register("contactNumber", { required: true })}
           />
-          <br /><br /><br />
+          
 
           <TextField
             id="clubName"
@@ -84,7 +84,7 @@ const Enrollment = () => {
             {...register("clubName", { required: true })}
          
           />
-          <br /><br /><br />
+          
           <TextField
             id="email"
             label="Email Id"
@@ -93,7 +93,7 @@ const Enrollment = () => {
             {...register("email", { required: true })}
          
           />
-          <br /><br /><br />
+          
           
           <Button 
             type="submit" 

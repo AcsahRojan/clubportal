@@ -5,6 +5,9 @@
     background-color:lavender;
 }
 #logcont{
-    background: linear-gradient(to bottom right, #baf8fe, #d9cdff, #fccee5);
+    height:50%;
+    background:transparent;
+
     
 }
+

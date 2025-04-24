@@ -3,6 +3,7 @@ const express = require ('express')
 const mongoose= require('mongoose')
 const UserModel = require('./models/User.js')
 const Club1Member = require('./models/Club1members')
+const Eventmembers = require('./models/Eventmembers')
 const cors = require ('cors')
 
 const app=express()
@@ -22,7 +23,7 @@ async function main() {
 }
 
 
-// to save a user to the db
+// enrollement form users
 app.post('/enrolls',async(req,res)=>{
     try{
         var newenrollment={
@@ -38,13 +39,45 @@ app.post('/enrolls',async(req,res)=>{
        res.status(201).json({success:true,
                             message:'enrolled',}) 
     }
-    catch(error){
-        console.error('Enrollment error:', error)
-        res.status(500).json({success: false,
-           message: 'Failed to enroll',
-           error: error.message })
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Enrollment failed',
+            error: error.message
+        });
     }
 })
+
+//Event form users
+app.post('/events',async (req,res)=>{
+    try {
+        var neweventmember={
+            name:req.body.name,
+            email:req.body.email,
+            phone:req.body.phone,
+            club:req.body.club
+
+        }
+        var eventdata= new Eventmembers(neweventmember) //create an instance
+        await eventdata.save()
+        res.status(201).json({success:true,
+            message:'registration sucessfull',})
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: 'Registration failed',
+            error: error.message
+        });
+    }
+})
+
+
+
+
+
 
 
 // //display users
