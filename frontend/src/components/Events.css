@@ -1,20 +1,27 @@
 .events-container {
     display: flex;
-    
+    height: 85vh;
     gap: 4rem;
     justify-content: center;
     padding: 4px;
+ 
 }
   
 .event-card {
     background:white;
-    border-radius: 10px;
-   
+    border-radius: 8px;   
     width: 300px;
     color: black;
     padding: 3rem;
-    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
   
 .event-image {
     width: 100%;
@@ -38,7 +45,10 @@
     text-align: center;
     color: darkblue;
 }
-  
+
+
+
+
   /* styles for the registration dialog */
 
   

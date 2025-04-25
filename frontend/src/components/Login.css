@@ -1,13 +1,25 @@
+#lh01{
+    font-family: 'Gilda Display', cursive;
+    text-align: center;
+    font-weight: 100;
+    font-size:larger;
+    margin-top: 40px;
+    line-height: 2.0;
+}
+#lh02{
+    text-align: center;
+    font-weight: 100;
+    margin-top: 20px;
+    line-height: 2.0;
+}
 #b{
     background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
 }
 #lpassword, #lemail{
-    background-color:lavender;
+    background-color: #f2eeff;
+    border-radius: 5px;
 }
 #logcont{
-    height:50%;
-    background:transparent;
-
+    background: linear-gradient(to bottom right, #ffa0d0, #b6a0ff, #a0f7ff );
     
 }
-

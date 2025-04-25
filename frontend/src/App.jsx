@@ -1,8 +1,13 @@
-import React, { useState, useEffect }from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
+import Sidebar from './components/Sidebar'
 import Memberdashboard from './components/Memberdashboard'
 import Admindashboard from './components/Admindashboard'
+import AdminMembers from './components/AdminMembers'
+import AdminEvents from './components/AdminEvents'
+import AdminAnno from './components/AdminAnno'
+import AdminReports from './components/AdminReports'
 import Announcements from './components/Announcements'
 import Profile from './components/Profile'
 import Events from './components/Events'
@@ -14,19 +19,27 @@ import Club5 from './components/Club5'
 import Login from './components/Login'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import Enrollment from './components/Enrollment'
+
 import './index.css'
 
 const App = () => {
   const role = localStorage.getItem('userRole'); 
   return (
     <Router>
-     
+      {role=== 'admin' && <Sidebar/>}
       {role === 'member' && <Header />}
 
       <Routes>       
         <Route path="/" element={<Login />} />
         {role === 'admin' && (
+          <>
           <Route path="/admindashboard" element={<Admindashboard />} />
+          <Route path="/adminmembers" element={<ProtectedRoutes><AdminMembers /></ProtectedRoutes>} />
+          <Route path="/adminevents" element={<ProtectedRoutes><AdminEvents /></ProtectedRoutes>} />
+          <Route path="/adminanno" element={<ProtectedRoutes><AdminAnno /></ProtectedRoutes>} />
+          <Route path="/adminreports" element={<ProtectedRoutes><AdminReports /></ProtectedRoutes>} />
+          <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
+          </>
         )}        
         {role === 'member' && (
           <>

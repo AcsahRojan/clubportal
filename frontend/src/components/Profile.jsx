@@ -1,6 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { Box} from '@mui/material';
 import './Profile.css';
 
 const Profile = () => {
@@ -28,31 +28,18 @@ const Profile = () => {
     });
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userRegno");
-    localStorage.removeItem("userContact");
-    localStorage.removeItem("userClubs");
 
-    window.location.href = "/"; // Redirect to login page
-  };
-
-  // If user data is not yet loaded
-  if (!user) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>
+    {user&&(
      <div className='profile-container' id="body">
       <div className="profile-card">
 
         {/* Left Panel */}
         <div className="profile-left">
           <img
-            src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-user-profile-avatar-png-image_13369988.png"
+            src="https://www.mgp.net.au/wp-content/uploads/2023/05/150-1503945_transparent-user-png-default-user-image-png-png.png"
             alt="Profile"
             className="profile-img"
           />
@@ -93,20 +80,10 @@ const Profile = () => {
             </ul>
           </div> */}
 
-          <div>
-            <Button
-              variant="text"
-              color="error"
-              onClick={handleLogout}
-              style={{ float: "right" }}
-            >
-              Logout <LogoutIcon fontSize="small" />
-            </Button>
-          </div>
-
         </div>
       </div>
       </div>
+      )}
     </>
   );
 };

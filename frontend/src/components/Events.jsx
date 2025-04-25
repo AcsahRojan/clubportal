@@ -122,14 +122,17 @@ const EventCard = ({ event }) => {
 };
 const Events = () => {
   return (
-    <div>
+    <div >
       <h1 className="gg">College Club Association Events</h1>
       <div className="events-container">
         {events.map((event) => (
-          <EventCard key={event.id} event={event} />
+          <EventCard key={event.id} event={event}/>
         ))}
       </div>
     </div>
+
+  
+
   );
 };
 
