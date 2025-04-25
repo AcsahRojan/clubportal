@@ -38,12 +38,14 @@ const Login = () => {
             localStorage.setItem('userRegno', regno);
             localStorage.setItem('userContact', contact);
             localStorage.setItem('userClubs', JSON.stringify(clubs)); 
-                
+
             if (role === 'admin') {
                 navigate('/admindashboard');
-            } else {
+                window.dispatchEvent(new Event("storage")); // 👈 triggers update
+              } else {
                 navigate('/memberdashboard');
-            }
+                window.dispatchEvent(new Event("storage"));
+              }
         }
         catch(error){
             console.error(error);

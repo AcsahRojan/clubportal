@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -23,7 +23,16 @@ import Enrollment from './components/Enrollment'
 import './index.css'
 
 const App = () => {
-  const role = localStorage.getItem('userRole'); 
+  const [role, setRole] = useState(localStorage.getItem('userRole'));
+
+  // Update role when localStorage changes (after login)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setRole(localStorage.getItem('userRole'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
   return (
     <Router>
       {role=== 'admin' && <Sidebar/>}
