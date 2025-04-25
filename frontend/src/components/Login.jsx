@@ -41,7 +41,7 @@ const Login = () => {
 
             if (role === 'admin') {
                 navigate('/admindashboard');
-                window.dispatchEvent(new Event("storage")); // 👈 triggers update
+                window.dispatchEvent(new Event("storage"));
               } else {
                 navigate('/memberdashboard');
                 window.dispatchEvent(new Event("storage"));
