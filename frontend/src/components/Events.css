@@ -1,50 +1,70 @@
-.events-container {
-    display: flex;
-    height: 85vh;
-    gap: 4rem;
-    justify-content: center;
-    padding: 4px;
- 
+.gg{
+    text-align: center;
+    font-family: Gilda Display;
+    font-size: 40px;
 }
-  
 .event-card {
-    background:white;
-    border-radius: 8px;   
-    width: 300px;
-    color: black;
-    padding: 3rem;
+    background-color: #ffffff;
+    border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 300px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   
-.event-image {
+  .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+ 
+  .event-image {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-}
+  }
   
-.title {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
+ 
+  .event-card h2 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+    color: #333;
+  }
   
-.para {
-    font-size:18px;
-    margin: 0.3rem 0;
-}
-.gg{
-    font-size: 35px;
+  .event-card p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #666;
     text-align: center;
-    color: darkblue;
-}
+    padding: 0 10px;
+  }
+  
+  
+  .event-card button {
+    margin: 15px 0;
+    background-color: #6C63FF;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .event-card button:hover {
+    background-color: #574fd6;
+  }
+  
+
+  .events-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
 
 
 

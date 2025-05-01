@@ -1,249 +1,153 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Button,
   TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
   Card,
   CardContent,
+  Grid,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  Button,
+  TableContainer,
 } from '@mui/material';
+import axios from 'axios';
 
 const AdminMembers = ({ isSidebarExpanded }) => {
-  const [roleFilter, setRoleFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [members, setMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const club = localStorage.getItem('userClub');
 
-  const handleRoleFilterChange = (event) => {
-    setRoleFilter(event.target.value);
-  };
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+       
+        const response = await axios.get('http://localhost:3000/users');
+        const clubMembers = response.data.filter(
+          (member) => member.clubName === club
+        );
+        setMembers(clubMembers);
+      } catch (error) {
+        console.error('Failed to fetch members:', error);
+      }
+    };
+    fetchMembers();
+  }, []);
 
-  const handleStatusFilterChange = (event) => {
-    setStatusFilter(event.target.value);
+  const filteredMembers = members.filter(
+    (member) =>
+      (member.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (member.dept.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+  
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this member?")) {
+      try {
+        await axios.delete(`http://localhost:3000/users/${id}`);
+        // Refresh the members list
+        setMembers((prev) => prev.filter((m) => m._id !== id));
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    }
   };
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+  
+ 
 
   return (
-    <Box sx={{ padding: 3, marginLeft: isSidebarExpanded ? 0 : 14 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontFamily: 'Gilda Display'}}>
-          Members
-        </Typography>
-        <Button variant="contained" sx={{ backgroundColor: '#3b0e76', color: '#fff' }}>
-          + Add Member
-        </Button>
-      </Box>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        transition: 'margin-left 0.3s ease',
+        marginLeft: isSidebarExpanded ? 0 : 10,
+        padding: 5,
+        
+      }}
+    >
+      {/* Header */}
+      <Typography variant="h4" sx={{ mb: 4, fontFamily: 'Gilda Display', fontWeight: 'bold' }}>
+        Club Members
+      </Typography>
 
-      {/* Filters */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={4}>
-          <FormControl sx={{ minWidth: 100 }}>
-            <InputLabel>Role</InputLabel>
-            <Select value={roleFilter} onChange={handleRoleFilterChange}>
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Member">Member</MenuItem>
-            </Select>
-          </FormControl>
+      {/* Card + Search Field Row */}
+      <Grid container spacing={3} alignItems="center" sx={{ mb: 4 }}>
+        <Grid item xs={12} md={4}>
+          <Card
+            sx={{
+              background: 'linear-gradient(to right, #1976d2, #42a5f5)',
+              color: '#fff',
+              boxShadow: 3,
+              borderRadius: 3,
+            }}
+          >
+            <CardContent>
+              <Typography variant="subtitle2" color="inherit">
+                Total Members
+              </Typography>
+              <Typography variant="h4" fontWeight={600}>
+                {members.length}
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <FormControl sx={{ minWidth: 100 }}>
-            <InputLabel>Status</InputLabel>
-            <Select value={statusFilter} onChange={handleStatusFilterChange}>
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Active">Active</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Inactive">Inactive</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={4}>
+
+        <Grid item xs={12} md={8}>
           <TextField
             fullWidth
-            placeholder="Search members..."
+            placeholder="Search members by name or department"
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            variant="outlined"
+            sx={{
+              backgroundColor: 'white',
+              
+              boxShadow: 1,
+            }}
           />
         </Grid>
       </Grid>
 
-      {/* Member List */}
-      <List container spacing={3}>
-        {/* Sample Member Card */}
-        <List sx={{ maxWidth: 500 }}>
-          <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <CardContent
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                backgroundColor: '#f4f4f9',
-                padding: 2,
-              }}
-            >
-              {/* Member Info */}
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  Example 1
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  one@example.com | Admin
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Joined July 2023
-                </Typography>
-              </Box>
-
-              {/* Member Status */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  backgroundColor: '#4caf50',
-                  color: '#fff',
-                  borderRadius: '10px',
-                  ml: 2,
-                }}
-              >
-                Active
-              </Button>
-            </CardContent>
-          </Card>
-        </List>
-
-        <List  sx={{ maxWidth: 500 }}>
-          <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <CardContent
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                backgroundColor: '#f4f4f9',
-                padding: 2,
-              }}
-            >
-              {/* Member Info */}
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  Example 2
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  two@example.com | Member
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Joined Jan 2023
-                </Typography>
-              </Box>
-
-              {/* Member Status */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  backgroundColor: '#4caf50',
-                  color: '#fff',
-                  borderRadius: '10px',
-                  ml: 2,
-                }}
-              >
-                Active
-              </Button>
-            </CardContent>
-          </Card>
-        </List>
-
-        <List  sx={{ maxWidth: 500 }}>
-          <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <CardContent
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                backgroundColor: '#f4f4f9',
-                padding: 2,
-              }}
-            >
-              {/* Member Info */}
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  Example 3
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  three@example.com | member
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Joined Jan 2023
-                </Typography>
-              </Box>
-
-              {/* Member Status */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  backgroundColor: '#ff1f1f',
-                  color: '#fff',
-                  borderRadius: '10px',
-                  ml: 2,
-                }}
-              >
-                Inactive
-              </Button>
-            </CardContent>
-          </Card>
-        </List>
-
-        <List  sx={{ maxWidth: 500 }}>
-          <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-            <CardContent
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                backgroundColor: '#f4f4f9',
-                padding: 2,
-              }}
-            >
-              {/* Member Info */}
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 500 }}>
-                  Example 4
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  four@example.com | Member
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Joined Jan 2023
-                </Typography>
-              </Box>
-
-              {/* Member Status */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  backgroundColor: '#c3c300',
-                  color: '#fff',
-                  borderRadius: '10px',
-                  ml: 2,
-                }}
-              >
-                Pending
-              </Button>
-            </CardContent>
-          </Card>
-        </List>
-      </List>
+      {/* Members Table */}
+      
+        <TableContainer  component={Paper} >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead >
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Department</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredMembers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={2}>
+                  <Typography textAlign="center" sx={{ p: 2 }}>
+                    No members found!
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredMembers.map((member, index) => (
+                <TableRow key={index} hover>
+                  <TableCell>{member.name}</TableCell>
+                  <TableCell>{member.email}</TableCell>
+                  <TableCell>{member.dept}</TableCell>
+                 <TableCell><Button variant='outlined' color='error' onClick={() => handleDelete(member._id)} >remove</Button></TableCell>
+                </TableRow>
+                
+              ))
+            )}
+            
+          </TableBody>
+          </Table>
+        </TableContainer>
+     
     </Box>
   );
 };

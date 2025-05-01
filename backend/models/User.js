@@ -5,11 +5,13 @@ const userSchema = new mongoose.Schema({
     email:String,
     password:String,
     role:String,
-    clubs:[String],
+    club:String,
     name:String,    
     phone:Number,
     regno:String,
-    
+    clubId: { type: mongoose.Schema.Types.ObjectId, ref: "Clubinfo" }
+
+
     
 })
 

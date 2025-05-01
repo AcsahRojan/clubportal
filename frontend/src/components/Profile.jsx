@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Box} from '@mui/material';
 import './Profile.css';
@@ -12,20 +11,10 @@ const Profile = () => {
     const email = localStorage.getItem('userEmail');
     const regno = localStorage.getItem('userRegno');
     const contact = localStorage.getItem('userContact');
-    // const clubs = JSON.parse(localStorage.getItem('userClubs') || '[]');
-
-
     const role = localStorage.getItem('userRole');
 
     // Set user data to state
-    setUser({
-      name,
-      email,
-      regno,
-      contact,
-      // clubs,
-      role,
-    });
+    setUser({name,email,regno,contact,role});
   }, []);
 
 

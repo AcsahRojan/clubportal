@@ -5,6 +5,7 @@ import {AppBar, Toolbar, IconButton, Menu, Container, Avatar, Tooltip, MenuItem}
 import './Header.css'
 
 const Header = () => {
+  const name = localStorage.getItem("userName");
 const [anchorElUser, setAnchorElUser] = React.useState(null);
 const handleOpenUserMenu = (event) => { 
     setAnchorElUser(event.currentTarget); }; 
@@ -58,10 +59,9 @@ return (
             <Button component={Link} to="/announcements" id="ann">Announcement</Button>
           </Box>
           
-
+          <h4 style={{fontFamily:"Gilda Display",height:"3vh",width:"23vh"}} >Welcome, {name}</h4>
           {/* User Settings */}
-          <Box sx={{ flexGrow: 0 }}>
-            
+          <Box sx={{ flexGrow: 0 }}>            
             <Tooltip title="Open profile">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="profile-img" />

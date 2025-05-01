@@ -11,14 +11,11 @@ import AdminReports from './components/AdminReports'
 import Announcements from './components/Announcements'
 import Profile from './components/Profile'
 import Events from './components/Events'
-import Club1 from './components/Club1'
-import Club2 from './components/Club2'
-import Club3 from './components/Club3'
-import Club4 from './components/Club4'
-import Club5 from './components/Club5'
+import Clubs from './components/Clubs'
 import Login from './components/Login'
+import SuperAdmin from './components/SuperAdmin'
 import ProtectedRoutes from './components/ProtectedRoutes'
-import Enrollment from './components/Enrollment'
+
 
 import './index.css'
 
@@ -35,12 +32,13 @@ const App = () => {
   }, []);
   return (
     <Router>
-      {role=== 'admin' && <Sidebar/>}
-      {role === 'member' && <Header />}
+      {role=== 'Admin' && <Sidebar/>}
+      {role === 'Member' && <Header />}
 
-      <Routes>       
+      <Routes>   
+      
         <Route path="/" element={<Login />} />
-        {role === 'admin' && (
+        {role === 'Admin' && (
           <>
           <Route path="/admindashboard" element={<Admindashboard />} />
           <Route path="/adminmembers" element={<ProtectedRoutes><AdminMembers /></ProtectedRoutes>} />
@@ -50,19 +48,20 @@ const App = () => {
           <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
           </>
         )}        
-        {role === 'member' && (
+        {role === 'Member' && (
           <>
             <Route path="/memberdashboard" element={<Memberdashboard />} />
             <Route path="/events" element={<ProtectedRoutes><Events /></ProtectedRoutes>} />
             <Route path="/announcements" element={<ProtectedRoutes><Announcements /></ProtectedRoutes>} />
             <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
-            <Route path="/club1" element={<ProtectedRoutes><Club1 /></ProtectedRoutes>} />
-            <Route path="/club2" element={<ProtectedRoutes><Club2 /></ProtectedRoutes>} />
-            <Route path="/club3" element={<ProtectedRoutes><Club3 /></ProtectedRoutes>} />
-            <Route path="/club4" element={<ProtectedRoutes><Club4 /></ProtectedRoutes>} />
-            <Route path="/club5" element={<ProtectedRoutes><Club5 /></ProtectedRoutes>} />
-            <Route path="/enrollment" element={<ProtectedRoutes><Enrollment /></ProtectedRoutes>} />
+            <Route path="/clubinfos/:clubId" element={<ProtectedRoutes><Clubs /></ProtectedRoutes>} />            
+          </>
+        )}
 
+         
+        {role === 'Super Admin' && (
+          <>
+            <Route path="/superadmin" element={<ProtectedRoutes><SuperAdmin /></ProtectedRoutes>} />
           </>
         )}
       </Routes>

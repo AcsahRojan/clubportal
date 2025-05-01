@@ -1,11 +1,12 @@
 const mongoose=require('mongoose')
 const eventmemberSchema =new mongoose.Schema({
-    name:String,
-    
+    name:String,    
     email:String,
     phone:String,
-    club:String
+    reg:String,
+    club:String,
+    title:String
 
 })
-const Eventmembers =mongoose.model('events',eventmemberSchema)
+const Eventmembers =mongoose.model('eventsreg',eventmemberSchema)
 module.exports=Eventmembers

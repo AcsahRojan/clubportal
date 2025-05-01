@@ -1,56 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Announcements.css";
+import { TextField,Paper } from "@mui/material";
+import axios from "axios";
 
-const announcements = [
-  {
-    club: "Club 1",
-    message: "We are organizing a coding competition! Prizes for top 3 participants. Open to all branches.",
-    date: "2025-04-25",
-    time: "10:00 AM",
-    category: "Competition",
-    contact: "club1@college.edu"
-  },
-  {
-    club: "Club 2",
-    message: "Join our Web Dev workshop. Learn React & Node.js in 3 hours!",
-    date: "2025-04-22",
-    time: "2:00 PM",
-    category: "Workshop",
-    contact: "contact@club2.org"
-  },
-  {
-    club: "Club 3",
-    message: "Submit your entries for the Photography Contest before Saturday.",
-    date: "2025-04-20",
-    time: "All Day",
-    category: "Contest",
-    contact: "club3@photoclub.com"
-  }
-];
+const Announcement = () => {
+  const [announcements, setAnnouncements] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
 
-const Announcements = () => {
+  useEffect(() => {
+    axios.get("http://localhost:3000/announcementinfo") 
+      .then((response) => {
+        setAnnouncements(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching announcements:", error);
+      });
+  }, []);
+
+  const filteredAnnouncements = announcements.filter((item) => {
+    return selectedDate === "" || item.date === selectedDate;
+  });
+
   return (
     <div className="announcement-container">
-      <h1 className="announcement-title"> Announcements</h1>
-      <div className="announcement-list">
-        {announcements.map((item, index) => (
-          <div className="announcement-card" key={index}>
-            <div className="announcement-header">
-              <div>
-                <h2 className="club-name">{item.club}</h2>
-                <span className="announcement-category">{item.category}</span>
-              </div>
-            </div>
+      <h1 className="announcement-title">Announcements</h1>
 
-            <p className="announcement-message">{item.message}</p>
-            <p className="announcement-date">📅 {item.date}</p>
-            <p className="announcement-time">⏰ {item.time}</p>
-            <p className="announcement-contact">📧 {item.contact}</p>
-          </div>
-        ))}
+      <div style={{ marginBottom: "20px", textAlign: "right" }}>
+        <TextField
+         variant="standard"
+          type="date"
+          label="Filter by date:"
+          InputLabelProps={{ shrink: true }}
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+      </div>
+
+      <div className="announcement-list">
+        {filteredAnnouncements.length > 0 ? (
+          filteredAnnouncements.map((item, index) => (
+            <div className="announcement-card" key={index}>
+              <div className="announcement-header">
+                <div>
+                  <h2 className="club-name">{item.club}</h2>
+                  <span className="announcement-category">{item.category}</span>
+                </div>
+              </div>
+              <p className="announcement-message">{item.message}</p>
+              <p className="announcement-date">📅 {item.date}</p>
+              <p className="announcement-time">⏰ {item.time}</p>
+              <p className="announcement-contact">📧 {item.contact}</p>
+            </div>
+          ))
+        ) : (
+          
+          <p style={{ textAlign: "center" }}>No announcements found for selected date.</p>
+        
+        )}
       </div>
     </div>
   );
 };
 
-export default Announcements;
+export default Announcement;

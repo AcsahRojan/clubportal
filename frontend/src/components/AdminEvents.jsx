@@ -1,9 +1,275 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Box,
+  Tabs,
+  Tab,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+} from "@mui/material";
 
-const AdminEvents = () => {
+const AdminEvents = ({ isSidebarExpanded }) => {
+  const club = localStorage.getItem("userClub");
+  const [events, setEvents] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [tabIndex, setTabIndex] = useState(0); // State to track the active tab
+
+  const [formData, setFormData] = useState({
+    event_title: "",
+    event_club: "",
+    event_date: "",
+    event_time: "",
+    event_venue: "",
+    event_description: "",
+  });
+
+  const fetchEvents = async () => {
+    const response = await axios.get("http://localhost:3000/eventsinfo");
+    setEvents(response.data);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const handleOpen = (event = null) => {
+    setEditingEvent(event);
+    if (event) {
+      setFormData(event);
+    } else {
+      setFormData({
+        event_title: "",
+        event_club: club,
+        event_date: "",
+        event_time: "",
+        event_venue: "",
+        event_description: "",
+      });
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditingEvent(null);
+    setFormData({
+      event_title: "",
+      event_club: "",
+      event_date: "",
+      event_time: "",
+      event_venue: "",
+      event_description: "",
+    });
+  };
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (editingEvent) {
+        await axios.patch(
+          `http://localhost:3000/events/${editingEvent._id}`,
+          formData
+        );
+      } else {
+        await axios.post("http://localhost:3000/events", formData);
+      }
+      fetchEvents();
+      handleClose();
+    } catch (error) {
+      console.error("Error saving event:", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      await axios.delete(`http://localhost:3000/events/${id}`);
+      fetchEvents();
+    }
+  };
+
+  // const getParticipantsByClub = (clubName) => {
+  //   return users.filter((user) => user.event_club.toLowerCase() === clubName.toLowerCase());
+  // };
+
+  // Separate events into current club and all events
+  const currentClubEvents = events.filter((event) => event.event_club === club);
+  const allOtherEvents = events.filter((event) => event.event_club !== club);
+  
+  
   return (
-    <div>AdminEvents</div>
-  )
-}
+   <div>
+    <Box sx={{ padding: 3, marginLeft: isSidebarExpanded ? 0 : 14 }}>
+      <div style={{ padding: "20px" }}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Manage Events
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpen()}
+          style={{ marginBottom: "20px" }}
+        >
+          Add New Event
+        </Button>
 
-export default AdminEvents
+        {/* Tabs for sectioning */}
+        <Tabs
+          value={tabIndex}
+          onChange={(e, newValue) => setTabIndex(newValue)}
+          indicatorColor="primary"
+          textColor="primary"
+          style={{ marginBottom: "20px" }}
+        >
+          <Tab label="Your Club Events" />
+          <Tab label="All Other Events" />
+        </Tabs>
+
+        {/* Tab Content */}
+        <Box hidden={tabIndex !== 0}>
+          <Typography variant="h5" gutterBottom>
+            Your Club Events
+          </Typography>
+          
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+            {currentClubEvents.map((event) => (
+              <Card key={event._id} variant="outlined">
+                <CardContent>
+                  <Typography variant="h6">{event.event_title}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Club:</strong> {event.event_club}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Date:</strong>{" "}
+                    {new Date(event.event_date).toLocaleDateString("en-US")}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Time:</strong>{" "}
+                    {new Date(`1970-01-01T${event.event_time}`).toLocaleTimeString(
+                      "en-US",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      }
+                    )}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Venue:</strong> {event.event_venue}
+                  </Typography>
+                  <Typography variant="body2">{event.event_description}</Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => handleOpen(event)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDelete(event._id)}
+                  >
+                    Delete
+                  </Button>
+                </CardActions>
+                
+              </Card>
+))}
+          </div>
+        </Box>
+
+        <Box hidden={tabIndex !== 1}>
+          <Typography variant="h5" gutterBottom>
+            All Other Events
+          </Typography>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+            {allOtherEvents.map((event) => (
+              <Card key={event._id} variant="outlined">
+                <CardContent>
+                  <Typography variant="h6">{event.event_title}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Club:</strong> {event.event_club}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Date:</strong>{" "}
+                    {new Date(event.event_date).toLocaleDateString("en-US")}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Time:</strong>{" "}
+                    {new Date(`1970-01-01T${event.event_time}`).toLocaleTimeString(
+                      "en-US",
+                      {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      }
+                    )}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Venue:</strong> {event.event_venue}
+                  </Typography>
+                  <Typography variant="body2">{event.event_description}</Typography>
+                  
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </Box>
+
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>
+            {editingEvent ? "Edit Event" : "Add New Event"}
+          </DialogTitle>
+          <DialogContent>
+            {[
+              { name: "event_title", label: "Event Title" },
+              { name: "event_date", label: "Event Date", type: "date" },
+              { name: "event_time", label: "Event Time", type: "time" },
+              { name: "event_venue", label: "Event Venue" },
+              { name: "event_description", label: "Event Description" },
+            ].map((field) => (
+              <TextField
+                required
+                key={field.name}
+                name={field.name}
+                label={field.label}
+                value={formData[field.name]}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                type={field.type || "text"}
+                InputLabelProps={field.type ? { shrink: true } : undefined}
+              />
+            ))}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary">
+              {editingEvent ? "Update" : "Create"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Box>
+    </div>
+  );
+};
+
+export default AdminEvents;
