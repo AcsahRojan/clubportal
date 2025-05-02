@@ -30,11 +30,24 @@ const Memberdashboard = () => {
 
   return (
     <>
-      <h1 style={{ textAlign: "center" }}>All Clubs</h1>
+      <Typography variant="h4" align="center" sx={{ mt: 4, fontWeight: 'bold', color: '#6a1b9a' }}>
+        Explore All Clubs
+      </Typography>
       <Grid container spacing={2} justifyContent="center" sx={{ mt: 3 }}>
         {clubs.map((club) => (
           <Grid  xs={6} sx={{ mr: 'auto', ml: 'auto' }} key={club._id}>
-            <Card sx={{ maxWidth: 500,mt: 5 , margin: 'auto', border: '2px solid black', cursor: 'pointer' }} onClick={() => handleCardClick(club._id)}>
+            <Card 
+            sx={{ maxWidth: 500,
+                  mt: 5 , 
+                  margin: 'auto', 
+                  border: '2px solid black', 
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                  transform: 'scale(1.03)',
+                  boxShadow: '0 6px 20px rgba(0,0,0,0.2)',}, 
+                }} 
+                onClick={() => handleCardClick(club._id)}>
               <CardActionArea id="clubs">
                 <CardMedia
                   component="img"
