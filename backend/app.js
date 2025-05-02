@@ -111,14 +111,24 @@ app.get('/clubinfos/:clubId', async (req, res) => {
 
 // to show all club data
 app.get('/clubinfos', async (req, res) => {
-    try {
-      const clubsinfo = await Clubinfo.find(); // find all clubs
-      res.json(clubsinfo);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+  try {
+    const clubsinfo = await Clubinfo.find();
+
+    const clubsWithMemberCounts = await Promise.all(
+      clubsinfo.map(async (club) => {
+        const memberCount = await ClubMembers.countDocuments({ clubName: club.name });
+        return {
+          ...club.toObject(),
+          members: memberCount
+        };
+      })
+    );
+    res.json(clubsWithMemberCounts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
   //to show all announcement infos
   app.get('/announcementinfo', async (req, res) => {
@@ -270,16 +280,142 @@ app.patch('/clubinfos', upload.array('photos'), async (req, res) => {
       await Eventmembers.updateMany({ club: oldName }, { $set: { club: name } });
       await UserModel.updateMany({ club: oldName }, { $set: { club: name } });
     }
-    
-
-
-
-
 
     res.status(200).json({ message: 'Club info updated successfully', club: updatedClub });
   } catch (error) {
     console.error('Error updating club info:', error);
     res.status(500).json({ message: 'Failed to update club info', error: error.message });
+  }
+});
+
+
+//Super Admin:dashboard stats
+app.get('/stats', async (req, res) => {
+    try {
+        const totalUsers = await UserModel.countDocuments();
+        const totalClubs = await Clubinfo.countDocuments();
+        const totalAdmins = await UserModel.countDocuments({ role: 'Admin' });
+        const totalMembers = await ClubMembers.countDocuments();
+       
+
+        res.status(200).json({
+            totalUsers,
+            totalClubs,
+            totalAdmins,
+            totalMembers,
+            
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super Admin:Delete a club
+app.delete('/clubinfos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedClub = await Clubinfo.findByIdAndDelete(id);
+        if (!deletedClub) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+        res.status(200).json({ message: 'Club deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super Admin:Create new Club
+app.post('/clubinfos', async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        const newClub = new Clubinfo({ name,email });
+        await newClub.save();
+        res.status(201).json(newClub);
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super admin:Get all users
+app.get('/superadmin/users', async (req, res) => {
+    try {
+        const users = await UserModel.find({});
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super admin:create new user
+app.post('/superadmin/users', async (req, res) => {
+    try {
+        const { name, email, password, role, regno, phone, club, clubId } = req.body;
+        const newUser = new UserModel({ name, email, password, role, regno, phone, club, clubId });
+        await newUser.save();
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super admin:Delete a user
+app.delete('/superadmin/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedUser = await UserModel.findByIdAndDelete(id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Super admin:Update user
+app.patch('/superadmin/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedUser = await UserModel.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        } 
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//super admin:collapsible table
+app.get('/clubs-with-stats', async (req, res) => {
+  try {
+    const clubs = await Clubinfo.find();
+
+    const enrichedClubs = await Promise.all(
+      clubs.map(async (club) => {
+        const memberCount = await ClubMembers.countDocuments({ clubName: club.name });
+        const adminCount = await UserModel.countDocuments({ role: 'Admin', club: club.name });
+
+        return {
+          ...club._doc,
+          members: memberCount,
+          admins: adminCount
+        };
+      })
+    );
+
+    res.json(enrichedClubs);
+  } catch (error) {
+    console.error("Error building club stats:", error);
+    res.status(500).json({ message: 'Failed to load club statistics' });
   }
 });
 

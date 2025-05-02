@@ -42,8 +42,8 @@ const Announcement = () => {
             <div className="announcement-card" key={index}>
               <div className="announcement-header">
                 <div>
-                  <h2 className="club-name">{item.club}</h2>
-                  <span className="announcement-category">{item.category}</span>
+                  <h2 className="club-name">{item.category}</h2>
+                  <span className="announcement-category">{item.club}</span>
                 </div>
               </div>
               <p className="announcement-message">{item.message}</p>

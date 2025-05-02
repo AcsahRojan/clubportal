@@ -1,15 +1,15 @@
-import React from 'react';
+import React,{ useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm,useWatch,Controller } from 'react-hook-form';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Profile from './Profile';
 import {
-    AppBar,
+    AppBar,Tab,Tabs,
     Box,
     Toolbar,
     Container,
-    Link,
     Menu,
     MenuItem,
     Tooltip,
@@ -34,47 +34,17 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu'
 import { 
-    AdminPanelSettingsRounded, 
+    AdminPanelSettingsRounded, Add,Delete,Edit,
     ManageAccountsRounded, 
     KeyboardArrowDown, 
     KeyboardArrowUp, 
     QueryStatsRounded, 
-    TuneRounded 
+    TuneRounded,
+    AddCircleRounded
 } from '@mui/icons-material';
+import axios from 'axios';
 
 
-const clubData = [
-    { name: 'Club 1', 
-    members: 84, 
-    admins: 3, 
-    adminDetails: [
-        { name: 'Name 1', status: 'Active' }, 
-        { name: 'Name 2', status: 'Inactive' }, 
-        { name: 'Name 3', status: 'Active' }] },
-    { name: 'Club 2', 
-    members: 75, 
-    admins: 2, 
-    adminDetails: [
-        { name: 'Name 1', status: 'Active' }, 
-        { name: 'Name 2', status: 'Inactive' }] },
-    { name: 'Club 3', 
-    members: 35, 
-    admins: 2, 
-    adminDetails: [
-        { name: 'Name 1', status: 'Active' }, 
-        { name: 'Name 2', status: 'Inactive' }] },
-    { name: 'Club 4', 
-    members: 48, 
-    admins: 1, 
-    adminDetails: [
-        { name: 'Name 1', status: 'Active' }] },
-    { name: 'Club 5', 
-    members: 80, 
-    admins: 2, 
-    adminDetails: [
-        { name: 'Name 1', status: 'Active' }, 
-        { name: 'Name 2', status: 'Inactive' }] },
-];
 
 const Row = ({ row }) => {
     const [open, setOpen] = React.useState(false);
@@ -89,7 +59,7 @@ const Row = ({ row }) => {
           </TableCell>
           <TableCell>{row.name}</TableCell>
           <TableCell>{row.members}</TableCell>
-          <TableCell>{row.admins}</TableCell>
+          <TableCell>{row.admins.length}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
@@ -102,14 +72,14 @@ const Row = ({ row }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Admin Name</TableCell>
-                      <TableCell>Status</TableCell>
+                      <TableCell>Email</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {row.adminDetails.map((admin, index) => (
+                    {row.admins.map((admin, index) => (
                       <TableRow key={index}>
                         <TableCell>{admin.name}</TableCell>
-                        <TableCell>{admin.status}</TableCell>
+                        <TableCell>{admin.email}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -209,187 +179,386 @@ const RoleCard = () => {
     );
 };
 
-const UserCard = () => {
-    const [open, setOpen] = useState(false);
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const onSubmit = async (data) => {
-      try {
-        const response = await axios.post("http://localhost:3000/superadmin", data);
-        alert(`${response.data.message}`);
-        reset();
-      } catch (error) {
-        const errorMessage = 'Failed to make any changes. Please try again.';
-        alert(errorMessage);
-      }
-    };
 
-    const userClick = () => {alert('Are you sure about this? Proceed with caution.');};
-  
-    return (
-      <div className="user-card">
-        <Button id="adb" variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => setOpen(true)}>Manage</Button>
-      
-        <Dialog open={open} onClose={() => setOpen(false)} className="dialogbox" >     
-          <DialogContent className="dialogcontent">
-           <h2>User Settings</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="eventform">
-              <TextField
-                label="Enter ObjectId of user"
-                {...register("ObjectId")}
-                fullWidth
-                margin="normal"
-                error={!!errors.ObjectId}
-                className="eventinput"
-                />
-              <TextField
-                label="Change name"
-                {...register("name")}
-                fullWidth
-                margin="normal"
-                error={!!errors.name}
-                className="eventinput"
-                />
-              <TextField
-                label="Change password"
-                type="password"
-                {...register("password")}
-                fullWidth
-                margin="normal"
-                error={!!errors.password}
-                className="eventinput"
-                />
-              <TextField
-                label="Change email"
-                type="email"
-                {...register("email")}
-                fullWidth
-                margin="normal"
-                error={!!errors.email}
-                className="eventinput"
-                />
-              <TextField
-                label="Change phone"
-                type="tel"
-                {...register("phone")}
-                fullWidth
-                margin="normal"
-                error={!!errors.phone}
-                className="eventinput"
-                />
-              <TextField
-                label="Change register number"
-                {...register("regno")}
-                fullWidth
-                margin="normal"
-                error={!!errors.regno}
-                className="eventinput"
-                />
-              <DialogActions>
-                <Button onClick={() => setOpen(false)} color="secondary" className="eventcancelbutton">Cancel</Button>
-                <Button type="submit" color="primary" onClick={userClick} className="eventsubmitbutton">Confirm Changes</Button>
-              </DialogActions>
-            </form>
-          </DialogContent>   
-        </Dialog>
-      </div>
-    );
+const UserCard = ({ clubs, fetchClubs }) => {
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState(0);
+  const [users, setUsers] = useState([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { register, handleSubmit,watch, reset,control, setValue, formState: { errors } } = useForm();
+
+  const selectedRole = useWatch({
+    control,
+    name: "role",
+    defaultValue: ""
+  });
+
+
+  const fetchUsers = async () => {
+    const res = await axios.get("http://localhost:3000/superadmin/users");
+    setUsers(res.data);
+  };
+
+  useEffect(() => {
+    if (open) 
+      fetchClubs();
+      fetchUsers();
+  }, [open]);
+
+  const handleCreateUser = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:3000/superadmin/users", data);
+      alert("user Created!!");
+      reset();
+      fetchUsers();
+    } catch {
+      alert("Creation failed.");
+    }
+  };
+
+  const handleEditUser = async (data) => {
+    try {
+      const res = await axios.patch(`http://localhost:3000/superadmin/users/${data.id}`, data);
+      alert("Data was updated for "+res.data.name);
+      reset();
+      fetchUsers();
+    } catch {
+      alert("Edit failed.");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      await axios.delete(`http://localhost:3000/superadmin/users/${id}`);
+      fetchUsers();
+    }
+  };
+
+  const populateForm = (user) => {
+    setShowCreateForm(true);
+    setTab(1);
+    setValue("id", user._id);
+    setValue("regno", user.regno);
+    setValue("password", user.password);
+    setValue("name", user.name);
+    setValue("email", user.email);
+    setValue("phone", user.phone);
+    setValue("club", user.club);
+    setValue("role", user.role);
+  };
+
+  return (
+    <>
+      <Button id="adb" variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => setOpen(true)}>
+        manage
+      </Button>
+
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogContent>
+          <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered>
+            <Tab label="All Users" />
+            <Tab label="Create / Edit User" />
+          </Tabs>
+
+          {tab === 0 && (
+            <Box mt={2}>
+              <TableContainer component={Paper}>
+                <Table >
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: '#f8bcda' }}>
+                      <TableCell>Reg no</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Club</TableCell>
+                      <TableCell>Role</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {users.map(user => (
+                      <TableRow key={user._id}>
+                        <TableCell>{user.regno}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{user.club}</TableCell>
+                        <TableCell>{user.role}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => populateForm(user)}><Edit color='secondary' /></IconButton>
+                          <IconButton onClick={() => handleDelete(user._id)}><Delete color='error' /></IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          )}
+
+          {tab === 1 && (
+            <Box mt={2}>
+              <Button
+                startIcon={<Add />}
+                onClick={() => {
+                  reset();
+                  setShowCreateForm(prev => !prev);
+                }}
+              >
+                {showCreateForm ? 'Hide Form' : 'Add New User'}
+              </Button>
+
+              {showCreateForm && (
+                <form onSubmit={handleSubmit((data) => data.id ? handleEditUser(data) : handleCreateUser(data))}>
+                  <input type="hidden" {...register("id")} />
+                  <TextField
+                    label="Name"
+                    fullWidth
+                    margin="normal"
+                    {...register("name", { required: true })}
+                  />
+                  <TextField
+                    label="Email"
+                    type="email"
+                    fullWidth
+                    margin="normal"
+                    {...register("email", { required: true })}
+                  />
+                   <TextField
+                    label="Reg no"
+                    type="text"
+                    fullWidth
+                    margin="normal"
+                    {...register("regno", { required: true })}
+                  />
+                  <TextField
+                    label="Phone"
+                    fullWidth
+                    margin="normal"
+                    {...register("phone")}
+                  />
+                 {/* Role Dropdown */}
+                  <TextField
+                    select
+                    label="Role"
+                    fullWidth
+                    margin="normal"
+                    {...register("role", { required: true })}
+                    defaultValue=""
+                    error={!!errors.role}>
+                    <MenuItem value="Member">Member</MenuItem>
+                    <MenuItem value="Admin">Admin</MenuItem>
+                    <MenuItem value="Super Admin">Super Admin</MenuItem>
+                  </TextField>
+
+              {/* Show Club dropdown if role is Admin */}
+                    {selectedRole === "Admin" && (
+                      <TextField
+                       select
+                       defaultValue=""
+                       label="Select Club"
+                       {...register("club")}
+                       fullWidth
+                       margin="normal">
+                       {clubs.map((club) => (
+                         <MenuItem key={club._id} value={club.name}>
+                            {club.name}
+                        </MenuItem>
+                       ))}
+                     </TextField>
+                   )}
+                  <TextField
+                    label="Password"
+                    type="text"
+                    fullWidth
+                    margin="normal"
+                    {...register("password")}
+                  />
+                  <DialogActions>
+                    <Button onClick={() => setOpen(false)} color="secondary">Cancel</Button>
+                    <Button type="submit" color="primary">
+                      {watch("id") ? "save changes" : "Create User"}
+                    </Button>
+                  </DialogActions>
+                </form>
+              )}
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
-const ClubCard = () => {
-    const [open, setOpen] = useState(false);
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const onSubmit = async (data) => {
-      try {
-        const response = await axios.post("http://localhost:3000/superadmin", data);
-        alert(`${response.data.message}`);
-        reset();
-      } catch (error) {
-        const errorMessage = 'Failed to make any changes. Please try again.';
-        alert(errorMessage);
-      }
-    };
 
-    const clubClick = () => {alert('Are you sure about this? You are about to add or delete a substantial amount of data. Proceed with utmost caution.');};
-  
-    return (
-      <div className="club-card">
-        <Button id="adb" variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => setOpen(true)}>Manage</Button>
-      
-        <Dialog open={open} onClose={() => setOpen(false)} className="dialogbox" >     
-          <DialogContent className="dialogcontent">
-           <h2>Club Settings</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="eventform">
-              <TextField
-                label="Enter ObjectId of user"
-                {...register("ObjectId")}
-                fullWidth
-                margin="normal"
-                error={!!errors.ObjectId}
-                className="eventinput"
-                />
-              <TextField
-                label="Change name"
-                {...register("name")}
-                fullWidth
-                margin="normal"
-                error={!!errors.name}
-                className="eventinput"
-                />
-              <TextField
-                label="Change password"
-                type="password"
-                {...register("password")}
-                fullWidth
-                margin="normal"
-                error={!!errors.password}
-                className="eventinput"
-                />
-              <TextField
-                label="Change email"
-                type="email"
-                {...register("email")}
-                fullWidth
-                margin="normal"
-                error={!!errors.email}
-                className="eventinput"
-                />         
-              <DialogActions>
-                <Button onClick={() => setOpen(false)} color="secondary" className="eventcancelbutton">Cancel</Button>
-                <Button type="submit" color="primary" onClick={clubClick} className="eventsubmitbutton">Confirm Changes</Button>
-              </DialogActions>
-            </form>
-          </DialogContent>   
-        </Dialog>
-      </div>
-    );
+
+const ClubCard = ({ clubs, fetchClubs }) => {
+  const [open, setOpen] = useState(false);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const [showForm, setShowForm] = useState(false);
+
+  // Fetch all clubs when dialog opens
+  useEffect(() => {
+    if (open) {
+      fetchClubs();
+    }
+  }, [open]);
+
+  // Delete a club
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this club?")) {
+      try {
+        await axios.delete(`http://localhost:3000/clubinfos/${id}`);
+        fetchClubs(); // Refresh the club list after deletion
+        alert("Club deleted successfully.");
+      } catch (error) {
+        alert("Failed to delete club.");
+        console.error(error);
+      }
+    }
+  };
+
+  // create a new club
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:3000/clubinfos", data);
+      reset();
+      fetchClubs(); // Refresh the club list after creation
+      alert("CLUB CREATED!!!")
+    } catch (error) {
+      alert("Failed to make any changes. Please try again.");
+      console.error(error);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        id="adb"
+        variant="outlined"
+        fullWidth
+        sx={{ mt: 2 }}
+        onClick={() => setOpen(true)}
+      >
+        Manage
+      </Button>
+
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogContent sx={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <Typography variant="h5" sx={{ mb: 2 }}>Club Settings</Typography>
+
+          {/* Club List */}
+          {clubs.map((club) => (
+            <Box key={club._id} sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
+              <Typography variant="h5"><strong>{club.name}</strong> </Typography>
+              <Typography variant="body2"><strong>Email:</strong> {club.email}</Typography> 
+              <Typography variant="body2"><strong>Members:</strong> {club.members}</Typography>           
+              <Delete variant="outlined" color="error" onClick={() => handleDelete(club._id)}/>
+            </Box>          
+          ))}
+           <IconButton onClick={() => { setOpen(true); setShowForm(true); }} sx={{ position:'sticky' }}>
+        <AddCircleRounded color='secondary' fontSize="large" />
+      </IconButton>
+          
+          {/* Edit Form */}
+          {showForm && (
+          <form onSubmit={handleSubmit(onSubmit)} className="eventform">
+            <TextField
+              label="New Club Name"
+              {...register("name")}
+              fullWidth
+              margin="normal"
+              error={!!errors.name}
+            />
+            <TextField
+              label="New club Email"
+              type="email"
+              {...register("email")}
+              fullWidth
+              margin="normal"
+              error={!!errors.email}
+            />
+            
+            <DialogActions>
+            <Button onClick={() => setShowForm(false)} color="secondary">Cancel</Button>
+              <Button type="submit" color="primary">Create</Button>
+            </DialogActions>
+          </form>
+          )}
+        </DialogContent>
+       
+      </Dialog>
+    </>
+  );
 };
 
-const pages = ['Dashboard', 'Roles', 'Users', 'Clubs'];
-const settings = ['Profile'];
 
 const SuperAdmin = () => {
-    const navigate = useNavigate();
-    const handleCardClick = (path) => {
-        navigate(path);
-    };
+  const [clubData, setClubData] = useState([]);
+  const [clubs, setClubs] = useState([]);
+  const navigate = useNavigate();
+  const handleCardClick = (path) => {navigate(path);};
+  const [open, setOpen] = useState(false);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const handleOpenDialog = () => {setOpen(true);};
+  const handleCloseDialog = () => {setOpen(false);};
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-  
-    const handleOpenNavMenu = (event) => { 
+   const handleOpenNavMenu = (event) => { 
       setAnchorElNav(event.currentTarget); }; 
     
     const handleOpenUserMenu = (event) => { 
       setAnchorElUser(event.currentTarget); }; 
     
-    const handleCloseNavMenu = () => { 
-      setAnchorElNav(null); };
   
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
   
+  
+  const[totalUsers, setTotalUsers] = useState(0);
+  const [totalClubs, setTotalClubs] = useState(0);
+  const [totalAdmins, setTotalAdmins] = useState(0);
+  const [totalMembers, setTotalMembers] = useState(0);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/stats`);
+      setTotalUsers(res.data.totalUsers);
+      setTotalClubs(res.data.totalClubs);
+      setTotalAdmins(res.data.totalAdmins);
+      setTotalMembers(res.data.totalMembers);
+      
+    } catch (error) {
+      console.error("Failed to fetch dashboard stats", error);
+    }
+  };
+
+  fetchData();
+}, []);
+
+useEffect(() => {
+  const fetchClubs = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/clubs-with-stats");
+      setClubData(res.data);
+    } catch (err) {
+      console.error("Error fetching club stats", err);
+    }
+  };
+  fetchClubs();
+}, []);
+
+const fetchClubs = async () => {
+  try {
+    const res = await axios.get("http://localhost:3000/clubinfos");
+    setClubs(res.data);
+  } catch (err) {
+    console.error("Error fetching clubs", err);
+  }
+};
+
+  
   return (
+    
     <>
     <AppBar position="static" id="t">
       <Container maxWidth="xl">
@@ -430,20 +599,8 @@ const SuperAdmin = () => {
           </Typography>
           
           {/* Desktop Navigation */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (  
-              <Button
-                key={page}
-                sx={{ my: 3, color: 'white', display: 'block' }}
-              >
-                <Link 
-                to={page === 'Dashboard' ? '/' : `/${page.toLowerCase()}`} 
-                style={{ textDecoration: 'none', color: 'inherit' }}>
-                  {page}
-                </Link>
-              </Button> 
-            ))}
-          </Box>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}/>
+            
           
           {/* Mobile Navigation */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -457,31 +614,6 @@ const SuperAdmin = () => {
             >
               <MenuIcon />
             </IconButton>
-            <Menu
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu} // Close the menu when clicking outside
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Link 
-                    to={page === 'Dashboard' ? '/' : `/${page.toLowerCase()}`} 
-                    style={{ textDecoration: 'none', color: 'inherit' }}
-                  >
-                    {page}
-                  </Link>
-                </MenuItem>
-              ))}
-            </Menu>
           </Box>
 
           {/* User Settings */}
@@ -498,14 +630,27 @@ const SuperAdmin = () => {
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Link to={`/${setting.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    {setting}
-                  </Link>
-                </MenuItem>
-              ))}
+            >            
+            <MenuItem onClick={handleOpenDialog}>Profile</MenuItem>
+           <Dialog open={open} 
+                   onClose={handleCloseDialog} 
+                   maxWidth="md" 
+                   fullWidth
+                   PaperProps={{
+                    style: {
+                      backgroundColor: 'transparent',
+                      boxShadow: 'none',
+                      border: 'none',
+                    },
+                  }}
+                  >              
+              <Profile />     
+         </Dialog>
+              
+              <MenuItem onClick={() => {
+                    localStorage.removeItem("userRole");
+                    window.location.href = "/"; 
+              }}>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>
@@ -532,31 +677,34 @@ const SuperAdmin = () => {
 
 
         {/*Statistics*/}
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ fontWeight: 'thin', mb: 4, fontSize: 30 }}
-        >
-          Overall Stats<br />
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'thin', mb: 4, fontSize: 30 }}>
+         Overall Stats<br />
         </Typography>
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(207, 255, 202)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>5</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalClubs}</Typography>
                 <Typography variant="h6">Total Clubs</Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(255, 255, 202)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>10</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalAdmins}</Typography>
                 <Typography variant="h6">Total Admins</Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(255, 206, 206)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>322</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalMembers}</Typography>
                 <Typography variant="h6">Total Members</Typography>
+            </Paper>
+          </Grid>
+          <br/>
+          <Grid item xs={12} sm={6} md={3}>
+            <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'lavender', minWidth: 600 }}>
+                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalUsers}</Typography>
+                <Typography variant="h6">Total Users</Typography>
             </Paper>
           </Grid>
         </Grid>
@@ -573,10 +721,16 @@ const SuperAdmin = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {clubData.map((club, index) => (
-                    <Row key={index} row={club} />
-                    ))}
-                </TableBody>
+  {clubData.map((club, index) => (
+    <TableRow key={index}>
+      <TableCell />
+      <TableCell>{club.name}</TableCell>
+      <TableCell>{club.members}</TableCell>
+      <TableCell>{club.admins}</TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
             </Table>
         </TableContainer>
 
@@ -593,7 +747,7 @@ const SuperAdmin = () => {
 
         <Grid container spacing={3}>
 
-          <Grid item xs={12} sm={6} md={3}>
+          {/* <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
               <AdminPanelSettingsRounded sx={{ fontSize: 40, color: '#3f51b5' }} />
               <CardContent>
@@ -604,7 +758,7 @@ const SuperAdmin = () => {
                 <RoleCard/>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
@@ -614,7 +768,7 @@ const SuperAdmin = () => {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                   Manage user information and security.
                 </Typography>
-                <UserCard/>
+                <UserCard clubs={clubs} fetchClubs={fetchClubs} />
               </CardContent>
             </Card>
           </Grid>
@@ -627,12 +781,13 @@ const SuperAdmin = () => {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                   Manage club data. Add or remove clubs.
                 </Typography>
-                <ClubCard/>
+                <ClubCard clubs={clubs} fetchClubs={fetchClubs}/>
+               
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          {/* <Grid item xs={12} sm={6} md={3}>
             <Card sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
               <QueryStatsRounded sx={{ fontSize: 40, color: '#ff9800' }} />
               <CardContent>
@@ -645,7 +800,7 @@ const SuperAdmin = () => {
                 </Button>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
 
         </Grid>
 
@@ -654,7 +809,7 @@ const SuperAdmin = () => {
       </Box>
     </Box>
 
-    <BottomNavigation id="bn"><Typography>&copy; 2025 College Club Portal</Typography></BottomNavigation>
+    <footer  id="bn"><Typography>&copy; 2025 College Club Portal</Typography></footer>
     </>
   );
 };

@@ -73,6 +73,7 @@ const Profile = () => {
       </div>
       </div>
       )}
+    <footer></footer>  
     </>
   );
 };

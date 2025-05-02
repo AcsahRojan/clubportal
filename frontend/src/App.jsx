@@ -62,6 +62,7 @@ const App = () => {
         {role === 'Super Admin' && (
           <>
             <Route path="/superadmin" element={<ProtectedRoutes><SuperAdmin /></ProtectedRoutes>} />
+            <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
           </>
         )}
       </Routes>

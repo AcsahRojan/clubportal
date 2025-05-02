@@ -136,6 +136,7 @@ const Login = () => {
                     </Box>
                 </Paper>
             </Container>
+          <footer  id="bn"><Typography>&copy; 2025 College Club Portal</Typography></footer>   
         </>
     );
 };

@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box, Typography, Button, Grid, Divider, IconButton, Tooltip,
   Dialog, DialogTitle, DialogContent, DialogActions, TextField,
-  Card, CardContent,
+  Card, CardContent, Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import { Groups, Event, Campaign, Edit } from '@mui/icons-material';
+import { Groups, Event, Campaign, Edit,ExpandMore,InfoOutline,Phone,Email,EmojiObjectsOutlined,Visibility } from '@mui/icons-material';
 import axios from 'axios';
 
 const AdminDashboard = ({ isSidebarExpanded }) => {
@@ -127,26 +129,65 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
               <Typography variant="h3" sx={{ fontFamily: 'Gilda Display', textAlign: 'center', mr: 1 }}>
                 {club.name}
               </Typography>
-              <Tooltip title="Edit Club Info">
-                <IconButton onClick={() => handleEditClick(club)}>
-                  <Edit color="primary" />
-                </IconButton>
-              </Tooltip>
+              
             </Box>
           </Divider>
-          <div>
-              <Typography>Description: {club.description}</Typography>
-              <Typography>Mission: {club.mission}</Typography>
-              <Typography>Vision: {club.vision}</Typography>
-              <Typography>Phone: {club.phone}</Typography>
-              <Typography>Email: {club.email}</Typography>
-            </div>
+          <Accordion
+  sx={{
+    backgroundColor: "#efebff",
+    
+    border: "1px solid #d1c4e9",
+    boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
+    my: 2,
+  }}
+>
+  <AccordionSummary expandIcon={<ExpandMore />} sx={{ padding: 2 }}>
+    <Typography variant="h6" sx={{  fontWeight: "bold" }}>
+      Club Info
+      <Tooltip title="Edit Club Info">
+                <IconButton onClick={() => handleEditClick(club)}>
+                  <Edit color="action" />
+                </IconButton>
+              </Tooltip>
+    </Typography>
+  </AccordionSummary>
+
+  <AccordionDetails>
+    
+    <Box>
+      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
+        <InfoOutline sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Description:</strong>&nbsp; {club.description}
+      </Typography>
+
+      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
+        <EmojiObjectsOutlined sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Mission:</strong>&nbsp; {club.mission}
+      </Typography>
+
+      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
+        <Visibility sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Vision:</strong>&nbsp; {club.vision}
+      </Typography>
+
+      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
+        <Phone sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Phone:</strong>&nbsp; {club.phone}
+      </Typography>
+
+      <Typography sx={{ display: "flex", alignItems: "center" }}>
+        <Email sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Email:</strong>&nbsp; {club.email}
+      </Typography>
+    </Box>
+  </AccordionDetails>
+</Accordion>
           </div>
         ))}
 
         {/* Edit Club Info Dialog */}
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-          <DialogTitle>Update Club Info</DialogTitle>
+          <DialogTitle>Edit Club Info</DialogTitle>
           <DialogContent>
             <TextField
               fullWidth
