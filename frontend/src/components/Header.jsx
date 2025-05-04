@@ -58,6 +58,14 @@ return (
             <Button component={Link} to="/events" id="ann">Event</Button>
             <Button component={Link} to="/announcements" id="ann">Announcement</Button>
           </Box>
+
+          {/* Mobile Navigation */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <Button component={Link} to="/memberdashboard" id="ann">Dashboard</Button>
+            <Button component={Link} to="/events" id="ann">Event</Button>
+            <Button component={Link} to="/announcements" id="ann">Announcement</Button>
+          </Box>
+          
           
           <h4 style={{fontFamily:"Gilda Display",height:"3vh",width:"23vh"}} >Welcome, {name}</h4>
           {/* User Settings */}

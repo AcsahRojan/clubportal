@@ -28,7 +28,7 @@ async function main() {
     await mongoose.connect('mongodb+srv://acsahrojan:scKSBcihcSy4nccB@cluster0.klyospf.mongodb.net/ClubPortal')
 }
 
-
+app.use('/uploads', express.static('uploads'));
 // enrollement form users
 app.post('/enrolls',async(req,res)=>{
     try{
@@ -112,6 +112,7 @@ app.get('/clubinfos/:clubId', async (req, res) => {
 // to show all club data
 app.get('/clubinfos', async (req, res) => {
   try {
+    
     const clubsinfo = await Clubinfo.find();
 
     const clubsWithMemberCounts = await Promise.all(
@@ -144,28 +145,48 @@ app.get('/clubinfos', async (req, res) => {
 });
 
 // Admin: Create event
-app.post('/events', async (req, res) => {
-    try {
-      const newEvent = new Eventinfo(req.body);
-      await newEvent.save();
-      res.status(201).json(newEvent);
-    } catch (err) {
-      res.status(400).json({ message: err.message });
-    }
-  });
+app.post("/events", upload.single("event_image"), async (req, res) => {
+  try {
+    const eventData = {
+      ...req.body,
+      event_image: req.file ? `uploads/${req.file.filename}` : "", // Save relative path
+    };
+    const newEvent = new Eventinfo(eventData);
+    await newEvent.save();
+    res.status(201).json(newEvent);
+  } catch (err) {
+    console.error("Error creating event:", err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
 
 // Admin: Update event
-app.patch('/events/:id', async (req, res) => {
-    try {
-      const updatedEvent = await Eventinfo.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedEvent) return res.status(404).json({message:'Event is not available'}) 
-      res.status(200).json(updatedEvent);
-    } 
-    catch(error){
-        console.error(error)
-        res.status(500).json({error:error})
+app.patch("/events/:id", upload.single("event_image"), async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    // Build updated event data
+    const updatedData = {
+      ...req.body,
+    };
+    // If new image is uploaded, update the image path
+    if (req.file) {
+      updatedData.event_image = `uploads/${req.file.filename}`;
     }
-  });
+    // Update the event in DB
+    const updatedEvent = await Eventinfo.findByIdAndUpdate(eventId, updatedData, {
+      new: true,
+    });
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.json(updatedEvent);
+  } catch (err) {
+    console.error("Error updating event:", err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
   
   // Admin: Delete event
   app.delete('/events/:id', async (req, res) => {
@@ -241,6 +262,7 @@ app.delete('/users/:id', async (req, res) => {
 
 // Update club info 
 app.patch('/clubinfos', upload.array('photos'), async (req, res) => {
+  // Serve static files from the uploads directory
   try {
     const { id, name, description, mission, vision,phone,email} = req.body;
     const photos = req.files || [];
@@ -257,7 +279,9 @@ app.patch('/clubinfos', upload.array('photos'), async (req, res) => {
       ...(vision && { vision }),
       ...(phone && { phone }),
       ...(email && { email }),
-      ...(photos.length > 0 && { gallery: photos.map((photo) => photo.path) }),
+      // ...(photos.length > 0 && { gallery: photos.map((photo) => photo.path) }),//gallery
+      ...(photos.length > 0 && { logo: photos[0].path }),
+
     };
 
     const existingClub = await Clubinfo.findById(id);
@@ -418,6 +442,7 @@ app.get('/clubs-with-stats', async (req, res) => {
     res.status(500).json({ message: 'Failed to load club statistics' });
   }
 });
+
 
 //Login Route
 app.post('/users/login', async (req, res) => {

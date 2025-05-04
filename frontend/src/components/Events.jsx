@@ -29,7 +29,8 @@ const EventCard = ({ event }) => {
 
   return (
     <div className="event-card">
-      <img src={"https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-3d-style-white-background-vector-illustration-of-a-blue-megaphone-banner-for-upcoming-events-vector-png-image_47185572.jpg"} alt={event.event_title} className="event-image" />
+      <img src={event.event_image ? `http://localhost:3000/${event.event_image}` : 'https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-3d-style-white-background-vector-illustration-of-a-blue-megaphone-banner-for-upcoming-events-vector-png-image_47185572.jpg'} 
+      alt={event.event_title} className="event-image" />
       <h2>{event.event_title}</h2>
       <p><strong>Club:</strong> {event.event_club}</p>
       <p><strong>Date:</strong> {new Date(event.event_date).toLocaleDateString('en-US')}</p>

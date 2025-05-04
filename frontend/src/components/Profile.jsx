@@ -17,7 +17,19 @@ const Profile = () => {
     setUser({name,email,regno,contact,role});
   }, []);
 
-
+ //clubs joined by the login member
+  const [clubs, setClubs] = useState([]);
+  useEffect(() => {  
+    const fetchClubs = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/prof'); // <-- your backend API endpoint
+        setClubs(res.data); // set the fetched club list
+      } catch (error) {
+        console.error('Failed to fetch clubs:', error);
+      }
+    };
+    fetchClubs();
+  }, []);
 
   return (
     <>
@@ -62,11 +74,18 @@ const Profile = () => {
 
           {/* <div className="profile-section">
             <h3>Clubs Joined</h3>
-            <ul>
+            
+              {clubs.map((club, index) => (
+                <div key={index} >
+                  <span>{club.name}</span>
+                </div>
+              ))}
+            
+             <ul>
               {clubs.map((club, index) => (
                 <li key={index}>{club}</li>
               ))}
-            </ul>
+            </ul> 
           </div> */}
 
         </div>

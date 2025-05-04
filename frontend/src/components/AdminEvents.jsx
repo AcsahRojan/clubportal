@@ -25,12 +25,14 @@ const AdminEvents = ({ isSidebarExpanded }) => {
   const [tabIndex, setTabIndex] = useState(0); // State to track the active tab
 
   const [formData, setFormData] = useState({
+    event_image:"",
     event_title: "",
     event_club: "",
     event_date: "",
     event_time: "",
     event_venue: "",
     event_description: "",
+    
   });
 
   const fetchEvents = async () => {
@@ -48,12 +50,14 @@ const AdminEvents = ({ isSidebarExpanded }) => {
       setFormData(event);
     } else {
       setFormData({
+        event_image:"",
         event_title: "",
         event_club: club,
         event_date: "",
         event_time: "",
         event_venue: "",
         event_description: "",
+       
       });
     }
     setOpen(true);
@@ -63,35 +67,60 @@ const AdminEvents = ({ isSidebarExpanded }) => {
     setOpen(false);
     setEditingEvent(null);
     setFormData({
+      event_image:"",
       event_title: "",
       event_club: "",
       event_date: "",
       event_time: "",
       event_venue: "",
       event_description: "",
+     
     });
   };
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, files } = e.target;
+  
+    if (e.target.type === "file") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files[0], // Store the actual file
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleSubmit = async () => {
     try {
+      const form = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        form.append(key, value);
+      })
+  
       if (editingEvent) {
         await axios.patch(
-          `http://localhost:3000/events/${editingEvent._id}`,
-          formData
+          `http://localhost:3000/events/${editingEvent._id}`,form,{
+            headers: { "Content-Type": "multipart/form-data" }
+          }
         );
       } else {
-        await axios.post("http://localhost:3000/events", formData);
+        await axios.post("http://localhost:3000/events", form, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
       }
+  
       fetchEvents();
       handleClose();
     } catch (error) {
       console.error("Error saving event:", error);
     }
   };
+  
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
@@ -169,7 +198,20 @@ const AdminEvents = ({ isSidebarExpanded }) => {
                   <Typography variant="body2" color="textSecondary">
                     <strong>Venue:</strong> {event.event_venue}
                   </Typography>
-                  <Typography variant="body2">{event.event_description}</Typography>
+                  <Typography variant="body2">{event.event_description}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Files added:</strong> 
+                    <img
+                      src={
+                        event.event_image 
+                          ? `http://localhost:3000/${event.event_image}`
+                          : "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-3d-style-white-background-vector-illustration-of-a-blue-megaphone-banner-for-upcoming-events-vector-png-image_47185572.jpg"
+                      }
+                     alt={event.title}
+                     style={{ width: "100px" }}
+                     />
+                  </Typography>
                 </CardContent>
                 <CardActions>
                   <Button
@@ -224,7 +266,10 @@ const AdminEvents = ({ isSidebarExpanded }) => {
                     <strong>Venue:</strong> {event.event_venue}
                   </Typography>
                   <Typography variant="body2">{event.event_description}</Typography>
-                  
+                  <Typography variant="body2" color="textSecondary">
+                    <strong>Image:</strong> 
+                    <img src={`http://localhost:3000/${event.event_image}` ||"https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-3d-style-white-background-vector-illustration-of-a-blue-megaphone-banner-for-upcoming-events-vector-png-image_47185572.jpg"}  alt={event.title} style={{ width: "100px" }}/>
+                  </Typography>
                 </CardContent>
               </Card>
             ))}
@@ -236,27 +281,48 @@ const AdminEvents = ({ isSidebarExpanded }) => {
             {editingEvent ? "Edit Event" : "Add New Event"}
           </DialogTitle>
           <DialogContent>
-            {[
-              { name: "event_title", label: "Event Title" },
-              { name: "event_date", label: "Event Date", type: "date" },
-              { name: "event_time", label: "Event Time", type: "time" },
-              { name: "event_venue", label: "Event Venue" },
-              { name: "event_description", label: "Event Description" },
-            ].map((field) => (
-              <TextField
-                required
-                key={field.name}
-                name={field.name}
-                label={field.label}
-                value={formData[field.name]}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                type={field.type || "text"}
-                InputLabelProps={field.type ? { shrink: true } : undefined}
-              />
-            ))}
-          </DialogContent>
+  {[
+    { name: "event_title", label: "Event Title" },
+    { name: "event_date", label: "Event Date", type: "date" },
+    { name: "event_time", label: "Event Time", type: "time" },
+    { name: "event_venue", label: "Event Venue" },
+    { name: "event_description", label: "Event Description" },
+    { name: "event_image", label: "Event Image", type: "file" },
+  ].map((field) => {
+    
+    if (field.type === "file") {
+      return (       
+        <input
+          key={field.name}
+          name={field.name}
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            handleChange(e);
+            
+          }}
+          style={{ marginTop: "16px", marginBottom: "16px", width: "100%" }}
+        />
+      );
+    } else {
+      return (
+        <TextField
+          required
+          key={field.name}
+          name={field.name}
+          label={field.label}
+          value={formData[field.name]}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          type={field.type || "text"}
+          InputLabelProps={field.type ? { shrink: true } : undefined}
+        />
+      );
+    }
+  })}
+</DialogContent>
+
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
               Cancel

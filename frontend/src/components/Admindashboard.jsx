@@ -22,6 +22,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
     mission: '',
     vision: '',
     phone:'',
+    leaders: [],
     email: '',
     photos: [],
   });
@@ -72,6 +73,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
 
   const handleSubmit = async () => {
     try {
+
       const formDataToSend = new FormData();
       Object.keys(formData).forEach((key) => {
         if (key === 'photos') {
@@ -123,34 +125,44 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
     >
       <Box sx={{ flex: 1 }}>
         {clubs.map((club) => (
-          <div key={club._id}>
+          <div key={club._id} >
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',  }}>
+            <img
+              src={club.logo ? `http://localhost:3000/${club.logo}` : '/default-logo.png'}
+              alt="Club Logo"
+               style={{
+                width: "120px",
+                height: "120px",
+                objectFit: "cover",
+                borderRadius: "100px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                justifyContent: "center",
+              }}/>
+            </div>
           <Divider sx={{ mb: 3 }} >
             <Box display="flex" justifyContent="center" alignItems="center">
               <Typography variant="h3" sx={{ fontFamily: 'Gilda Display', textAlign: 'center', mr: 1 }}>
                 {club.name}
-              </Typography>
-              
+              </Typography>           
             </Box>
           </Divider>
           <Accordion
-  sx={{
-    backgroundColor: "#efebff",
-    
-    border: "1px solid #d1c4e9",
-    boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
-    my: 2,
-  }}
->
-  <AccordionSummary expandIcon={<ExpandMore />} sx={{ padding: 2 }}>
-    <Typography variant="h6" sx={{  fontWeight: "bold" }}>
-      Club Info
-      <Tooltip title="Edit Club Info">
-                <IconButton onClick={() => handleEditClick(club)}>
-                  <Edit color="action" />
-                </IconButton>
-              </Tooltip>
-    </Typography>
-  </AccordionSummary>
+           sx={{
+                backgroundColor: "#efebff",    
+                border: "1px solid #d1c4e9",
+                boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
+                my: 2,
+                }}>
+              <AccordionSummary expandIcon={<ExpandMore />} sx={{ padding: 2 }}>
+                 <Typography variant="h6" sx={{  fontWeight: "bold" }}>
+                     Club Info
+                   <Tooltip title="Edit Club Info">
+                     <IconButton onClick={() => handleEditClick(club)}>
+                       <Edit color="action" />
+                     </IconButton>
+                   </Tooltip>
+                 </Typography>
+              </AccordionSummary>
 
   <AccordionDetails>
     
@@ -179,10 +191,24 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
         <Email sx={{ mr: 1, color: "#8e24aa" }} />
         <strong>Email:</strong>&nbsp; {club.email}
       </Typography>
+      
+        
+      <Typography sx={{ display: "flex", alignItems: "center" }}  >
+        <Groups sx={{ mr: 1, color: "#8e24aa" }} />
+        <strong>Leaders:</strong> &nbsp;
+        {club.leaders.map((leader, index) => (
+        <Box key={index} component="section" sx={{ p: 2, border: '1px dashed grey', mr:2,mt:1.5}}>
+          <strong>{leader.position} :</strong> <br/> {leader.name}</Box>
+      ))}
+      </Typography>
+      
+      
     </Box>
   </AccordionDetails>
 </Accordion>
+
           </div>
+          
         ))}
 
         {/* Edit Club Info Dialog */}
@@ -240,21 +266,23 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
               margin="normal"
               type="email"
             />
+            Change Logo: 
             <Button
-              variant="contained"
+              variant="outlined"
               component="label"
+              color='secondary'
               startIcon={<AddPhotoAlternateIcon />}
-              sx={{ mt: 2 }}
-            >
-              Upload Photos
+              sx={{ mt: 0}}
+            >            
               <input
                 type="file"
-                hidden
+                // hidden
                 multiple
                 accept="image/*"
                 onChange={handlePhotoUpload}
               />
             </Button>
+            
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)} color="secondary">Cancel</Button>

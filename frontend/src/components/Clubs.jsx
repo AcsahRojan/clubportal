@@ -26,6 +26,7 @@ const ClubPage = () => {
     rollNo: user.regno,
     dept: '',
     contactNumber: user.contact,
+    logo: '',
   });
 
   useEffect(() => {
@@ -88,11 +89,11 @@ const ClubPage = () => {
   return (
     <div className="club-container">
       <div className="club-card">
-        {clubData.logoUrl && (
+        {/* {clubData.logo && ( */}
           <div className="club-logo">
-            <img src={clubData.logoUrl} alt="Club Logo" />
+            <img src={clubData.logo ? `http://localhost:3000/${clubData.logo}` : '/default-logo.png'} alt="Club Logo" />
           </div>
-        )}
+        {/* )} */}
 
         <h1 className="club-title">{clubData.name}</h1>
       
@@ -159,9 +160,13 @@ const ClubPage = () => {
        
           <div className="club-section">
             <h2 className="club-section-title">Contact Details:</h2>
-              <div  className="event-card">
-                <strong>Phone:</strong> <p>{clubData.phone}</p>               
-                <strong>Email:</strong> <p>{clubData.email}</p>                
+              <div  className="event-list">
+                <div className="event-card">
+                <strong>Phone:</strong> <p>{clubData.phone}</p> 
+                </div>
+                <div className="event-card">              
+                <strong>Email:</strong> <p>{clubData.email}</p>  
+                </div>              
                 </div>
             
           </div>

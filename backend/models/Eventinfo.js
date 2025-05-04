@@ -6,6 +6,7 @@ const eventinfoSchema =new mongoose.Schema({
     event_time:String,
     event_venue:String,
     event_description:String,
+    event_image:String,
     
 
 })
