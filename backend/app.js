@@ -264,7 +264,7 @@ app.delete('/users/:id', async (req, res) => {
 app.patch('/clubinfos', upload.array('photos'), async (req, res) => {
   // Serve static files from the uploads directory
   try {
-    const { id, name, description, mission, vision,phone,email} = req.body;
+    const { id, name, description, mission, vision, phone, email } = req.body;
     const photos = req.files || [];
     
     if (!id) {

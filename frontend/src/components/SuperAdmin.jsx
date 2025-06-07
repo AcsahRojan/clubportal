@@ -34,7 +34,11 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu'
 import { 
-    AdminPanelSettingsRounded, Add,Delete,Edit,
+    AdminPanelSettingsRounded, 
+    Add, 
+    Close, 
+    Delete,
+    Edit,
     ManageAccountsRounded, 
     KeyboardArrowDown, 
     KeyboardArrowUp, 
@@ -52,16 +56,16 @@ const Row = ({ row }) => {
     return (
       <>
         <TableRow>
-          <TableCell>
+          {/*<TableCell>
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
             </IconButton>
-          </TableCell>
+          </TableCell>*/}
           <TableCell>{row.name}</TableCell>
           <TableCell>{row.members}</TableCell>
           <TableCell>{row.admins.length}</TableCell>
         </TableRow>
-        <TableRow>
+        {/*<TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={2}>
@@ -87,12 +91,12 @@ const Row = ({ row }) => {
               </Box>
             </Collapse>
           </TableCell>
-        </TableRow>
+        </TableRow>*/}
       </>
     );
 };
 
-const RoleCard = () => {
+/*const RoleCard = () => {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const onSubmit = async (data) => {
@@ -177,7 +181,7 @@ const RoleCard = () => {
         </Dialog>
       </div>
     );
-};
+};*/
 
 
 const UserCard = ({ clubs, fetchClubs }) => {
@@ -246,45 +250,47 @@ const UserCard = ({ clubs, fetchClubs }) => {
     setValue("club", user.club);
     setValue("role", user.role);
   };
+  
+  const userClick = () => {alert('Are you sure about this? Proceed with caution.');};
 
   return (
     <>
       <Button id="adb" variant="outlined" fullWidth sx={{ mt: 2 }} onClick={() => setOpen(true)}>
-        manage
+        Manage
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogContent>
-          <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered>
-            <Tab label="All Users" />
-            <Tab label="Create / Edit User" />
+          <Tabs value={tab} indicatorColor="#9b0302" textColor="#0c2d55" onChange={(e, newValue) => setTab(newValue)} >
+            <Tab id='admin-event-tabs' sx={{fontFamily: 'Montserrat, sans-serif'}} label="All Users" />
+            <Tab id='admin-event-tabs' sx={{fontFamily: 'Montserrat, sans-serif'}} label="Create / Edit User" />
           </Tabs>
 
           {tab === 0 && (
             <Box mt={2}>
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper} sx={{ borderRadius: 5, backgroundColor: '#efebff' }}>
                 <Table >
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: '#f8bcda' }}>
-                      <TableCell>Reg no</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      <TableCell>Club</TableCell>
-                      <TableCell>Role</TableCell>
-                      <TableCell>Actions</TableCell>
+                    <TableRow sx={{ backgroundColor: '#b7d1f1' }}>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Reg no</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Name</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Email</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Club</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Role</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {users.map(user => (
                       <TableRow key={user._id}>
-                        <TableCell>{user.regno}</TableCell>
-                        <TableCell>{user.name}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>{user.club}</TableCell>
-                        <TableCell>{user.role}</TableCell>
+                        <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{user.regno}</TableCell>
+                        <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{user.name}</TableCell>
+                        <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{user.email}</TableCell>
+                        <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{user.club}</TableCell>
+                        <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{user.role}</TableCell>
                         <TableCell>
-                          <IconButton onClick={() => populateForm(user)}><Edit color='secondary' /></IconButton>
-                          <IconButton onClick={() => handleDelete(user._id)}><Delete color='error' /></IconButton>
+                          <IconButton onClick={() => populateForm(user)}><Edit sx={{ color: '#0c2d55'}} /></IconButton>
+                          <IconButton onClick={() => handleDelete(user._id)}><Delete sx={{ color: '#9b0302'}} /></IconButton>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -297,12 +303,13 @@ const UserCard = ({ clubs, fetchClubs }) => {
           {tab === 1 && (
             <Box mt={2}>
               <Button
-                startIcon={<Add />}
+                sx={{color: '#0c2d55', '&:hover': {backgroundColor: '#e5aaaa'}, fontFamily: 'Montserrat, sans-serif'}}
                 onClick={() => {
                   reset();
                   setShowCreateForm(prev => !prev);
                 }}
               >
+                {showCreateForm ? <Close /> : <Add />}
                 {showCreateForm ? 'Hide Form' : 'Add New User'}
               </Button>
 
@@ -373,8 +380,8 @@ const UserCard = ({ clubs, fetchClubs }) => {
                     {...register("password")}
                   />
                   <DialogActions>
-                    <Button onClick={() => setOpen(false)} color="secondary">Cancel</Button>
-                    <Button type="submit" color="primary">
+                    <Button onClick={() => setOpen(false)} id='admin-event-edit-cancel'>Cancel</Button>
+                    <Button type="submit" id='admin-event-edit-update-create' onClick={userClick}>
                       {watch("id") ? "save changes" : "Create User"}
                     </Button>
                   </DialogActions>
@@ -422,7 +429,7 @@ const ClubCard = ({ clubs, fetchClubs }) => {
       const response = await axios.post("http://localhost:3000/clubinfos", data);
       reset();
       fetchClubs(); // Refresh the club list after creation
-      alert("CLUB CREATED!!!")
+      alert("Club Created! Congratulations! Your brand new club is ready for you.")
     } catch (error) {
       alert("Failed to make any changes. Please try again.");
       console.error(error);
@@ -443,21 +450,32 @@ const ClubCard = ({ clubs, fetchClubs }) => {
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
         <DialogContent sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>Club Settings</Typography>
+          <Typography 
+          variant="h5" 
+          sx={{ mb: 2, fontFamily: 'Montserrat, sans-serif', fontSize: '30px' }}>
+            Club Settings
+          </Typography>
 
           {/* Club List */}
           {clubs.map((club) => (
-            <Box key={club._id} sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 2 }}>
-              <Typography variant="h5"><strong>{club.name}</strong> </Typography>
+            <Box key={club._id} sx={{ mb: 2, p: 2, border: '1px solid #ccc', borderRadius: 5, backgroundColor: '#c8e1ff' }}>
+              <Typography sx={{ fontFamily: 'Montserrat, sans-serif' }}variant="h5">{club.name}</Typography>
               <Typography variant="body2"><strong>Email:</strong> {club.email}</Typography> 
               <Typography variant="body2"><strong>Members:</strong> {club.members}</Typography>           
-              <Delete variant="outlined" color="error" onClick={() => handleDelete(club._id)}/>
+              <Tooltip title='Delete'>
+                <Delete 
+                sx={{ width: 30, height: 30 }} 
+                variant="outlined" 
+                color="error" 
+                onClick={() => handleDelete(club._id)}/>
+              </Tooltip>
             </Box>          
           ))}
-           <IconButton onClick={() => { setOpen(true); setShowForm(true); }} sx={{ position:'sticky' }}>
-        <AddCircleRounded color='secondary' fontSize="large" />
-      </IconButton>
-          
+          <Typography sx={{ mt: 5, fontFamily: 'Montserrat, sans-serif', fontSize: '20px' }}>Create New Club</Typography>
+          <IconButton onClick={() => { setOpen(true); setShowForm(true); }} sx={{ position:'sticky' }}>
+            <Tooltip title='New Club'><AddCircleRounded sx={{ color: '#0c2d55'}} fontSize="large" /></Tooltip>
+          </IconButton>
+                    
           {/* Edit Form */}
           {showForm && (
           <form onSubmit={handleSubmit(onSubmit)} className="eventform">
@@ -478,8 +496,8 @@ const ClubCard = ({ clubs, fetchClubs }) => {
             />
             
             <DialogActions>
-            <Button onClick={() => setShowForm(false)} color="secondary">Cancel</Button>
-              <Button type="submit" color="primary">Create</Button>
+            <Button onClick={() => setShowForm(false)} id='admin-event-edit-cancel'>Cancel</Button>
+              <Button type="submit" id='admin-event-edit-update-create'>Create</Button>
             </DialogActions>
           </form>
           )}
@@ -492,12 +510,18 @@ const ClubCard = ({ clubs, fetchClubs }) => {
 
 
 const SuperAdmin = () => {
+
+  const name = localStorage.getItem("userName");
+  
   const [clubData, setClubData] = useState([]);
   const [clubs, setClubs] = useState([]);
+
   const navigate = useNavigate();
   const handleCardClick = (path) => {navigate(path);};
+
   const [open, setOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
   const handleOpenDialog = () => {setOpen(true);};
   const handleCloseDialog = () => {setOpen(false);};
 
@@ -571,13 +595,13 @@ const fetchClubs = async () => {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'Gilda Display',
+              fontFamily: 'Montserrat, sans-serif',
               letterSpacing: '.1rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            COLLEGE NAME
+            MARIAN COLLEGE
           </Typography>
           <Typography
             variant="h6"
@@ -616,11 +640,12 @@ const fetchClubs = async () => {
             </IconButton>
           </Box>
 
+          <h4 style={{ fontWeight: '500'}} >Welcome, {name}</h4>
           {/* User Settings */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open profile">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Profile Icon" />
+                <Avatar sx={{ml: 1}} alt="Profile Icon" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -632,20 +657,21 @@ const fetchClubs = async () => {
               onClose={handleCloseUserMenu}
             >            
             <MenuItem onClick={handleOpenDialog}>Profile</MenuItem>
-           <Dialog open={open} 
-                   onClose={handleCloseDialog} 
-                   maxWidth="md" 
-                   fullWidth
-                   PaperProps={{
-                    style: {
-                      backgroundColor: 'transparent',
-                      boxShadow: 'none',
-                      border: 'none',
-                    },
-                  }}
-                  >              
+            <Dialog open={open} 
+              onClose={handleCloseDialog} 
+              maxWidth="md" 
+              fullWidth
+              slotProps={{ paper: 
+                {style: 
+                  {backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                  border: 'none',
+                  },
+                }
+              }}
+            >              
               <Profile />     
-         </Dialog>
+            </Dialog>
               
               <MenuItem onClick={() => {
                     localStorage.removeItem("userRole");
@@ -657,8 +683,6 @@ const fetchClubs = async () => {
       </Container>
     </AppBar>
 
-
-
     <Box
       sx={{
         display: 'flex',
@@ -668,79 +692,77 @@ const fetchClubs = async () => {
         padding: 5,
       }}
     >
-      <Box
-        sx={{
-            flex: 1, // Ensure the content takes full width minus the sidebar
-        }}
-      >
-
-
+      <Box sx={{ flex: 1, ml: 2 }}> {/*Ensure the content takes full width*/}
 
         {/*Statistics*/}
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'thin', mb: 4, fontSize: 30 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontFamily: 'Montserrat, san-serif', fontWeight: 'thin', mb: 4, fontSize: 30 }}>
          Overall Stats<br />
         </Typography>
 
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(207, 255, 202)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalClubs}</Typography>
-                <Typography variant="h6">Total Clubs</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Montserrat, san-serif' }}>{totalClubs}</Typography>
+                <Typography variant="h6" sx={{ fontFamily: 'Montserrat, san-serif' }}>Total Clubs</Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(255, 255, 202)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalAdmins}</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Montserrat' }}>{totalAdmins}</Typography>
                 <Typography variant="h6">Total Admins</Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'rgb(255, 206, 206)', minWidth: 150 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalMembers}</Typography>
+                <Typography variant="h3" sx={{ fontFamily: 'Montserrat' }}>{totalMembers}</Typography>
                 <Typography variant="h6">Total Members</Typography>
             </Paper>
           </Grid>
-          <br/>
           <Grid item xs={12} sm={6} md={3}>
-            <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: 'lavender', minWidth: 600 }}>
-                <Typography variant="h3" sx={{ fontFamily: 'Gilda Display' }}>{totalUsers}</Typography>
+            <Paper sx={{ p: 3, textAlign: 'center', borderRadius: 2, backgroundColor: '#c8e1ff', minWidth: 150 }}>
+                <Typography variant="h3" sx={{ fontFamily: 'Montserrat' }}>{totalUsers}</Typography>
                 <Typography variant="h6">Total Users</Typography>
             </Paper>
           </Grid>
         </Grid>
 
-        {/*Collapsible Table*/}
-        <TableContainer component={Paper} sx={{ mb: 6, width: 400, borderRadius: 2, backgroundColor: '#efebff' }}>
+        {/*Stats Table*/}
+        <TableContainer component={Paper} sx={{ mb: 6, width: 400, borderRadius: 2, backgroundColor: '#ffeaf4' }}>
             <Table aria-label="collapsible table">
                 <TableHead sx={{ backgroundColor: '#f8bcda' }}>
                     <TableRow>
-                    <TableCell />
-                    <TableCell>Club</TableCell>
-                    <TableCell>Members</TableCell>
-                    <TableCell>Admins</TableCell>
+                    {/*<TableCell>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => setOpen(!open)}
+                      >
+                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      </IconButton>
+                    </TableCell>*/}
+                    <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold' }}>Club</TableCell>
+                    <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold' }}>Members</TableCell>
+                    <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 'bold' }}>Admins</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-  {clubData.map((club, index) => (
-    <TableRow key={index}>
-      <TableCell />
-      <TableCell>{club.name}</TableCell>
-      <TableCell>{club.members}</TableCell>
-      <TableCell>{club.admins}</TableCell>
-    </TableRow>
-  ))}
-</TableBody>
-
+                  {clubData.map((club, index) => (
+                    <TableRow key={index}>
+                      {/*<TableCell />*/}
+                      <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }}>{club.name}</TableCell>
+                      <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }}>{club.members}</TableCell>
+                      <TableCell sx={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }}>{club.admins}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
             </Table>
         </TableContainer>
-
-
 
         {/*Actions*/}
         <Typography
           variant="h5"
           gutterBottom
-          sx={{ fontWeight: 'thin', mb: 4, fontSize: 30 }}
+          sx={{ fontFamily: 'Montserrat, san-serif', fontWeight: 'thin', mb: 4, fontSize: 30 }}
         >
           Actions<br />
         </Typography>
@@ -761,7 +783,8 @@ const fetchClubs = async () => {
           </Grid> */}
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
+            <Card id='admindashcards'
+            sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
               <ManageAccountsRounded sx={{ fontSize: 40, color: '#4caf50' }} />
               <CardContent>
                 <Typography variant="h6">User Settings</Typography>
@@ -774,12 +797,13 @@ const fetchClubs = async () => {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
+            <Card id='admindashcards'
+            sx={{ p: 5, textAlign: 'center', borderRadius: 3, boxShadow: 3, maxHeight: 200, minWidth: 350 }}>
               <TuneRounded sx={{ fontSize: 40, color: '#f44336' }} />
               <CardContent>
                 <Typography variant="h6">Club Settings</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Manage club data. Add or remove clubs.
+                  Manage club data. Create or delete clubs.
                 </Typography>
                 <ClubCard clubs={clubs} fetchClubs={fetchClubs}/>
                
@@ -803,13 +827,8 @@ const fetchClubs = async () => {
           </Grid> */}
 
         </Grid>
-
-
-
       </Box>
     </Box>
-
-    <footer  id="bn"><Typography>&copy; 2025 College Club Portal</Typography></footer>
     </>
   );
 };

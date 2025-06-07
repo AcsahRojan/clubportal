@@ -15,6 +15,8 @@ import Clubs from './components/Clubs'
 import Login from './components/Login'
 import SuperAdmin from './components/SuperAdmin'
 import ProtectedRoutes from './components/ProtectedRoutes'
+import Footer from './components/Footer'
+import ContactUs from './components/ContactUs'
 
 
 import './index.css'
@@ -44,7 +46,7 @@ const App = () => {
           <Route path="/adminmembers" element={<ProtectedRoutes><AdminMembers /></ProtectedRoutes>} />
           <Route path="/adminevents" element={<ProtectedRoutes><AdminEvents /></ProtectedRoutes>} />
           <Route path="/adminanno" element={<ProtectedRoutes><AdminAnno /></ProtectedRoutes>} />
-          <Route path="/adminreports" element={<ProtectedRoutes><AdminReports /></ProtectedRoutes>} />
+          {/*<Route path="/adminreports" element={<ProtectedRoutes><AdminReports /></ProtectedRoutes>} />*/}
           <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
           </>
         )}        
@@ -65,7 +67,9 @@ const App = () => {
             <Route path="/profile" element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
           </>
         )}
+        <Route path="/contactus" element={<ContactUs />} />
       </Routes>
+      <Footer/>
     </Router>
   )
 }

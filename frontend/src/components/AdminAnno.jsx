@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Announcements.css";
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Box } from "@mui/material";
+import "./AdminAnno.css";
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Tabs, Tab, Box, Typography } from "@mui/material";
+import { CalendarToday, AccessTime, Email, Phone } from "@mui/icons-material"
 
-const AdminAnno = () => {
+
+const AdminAnno = ({ isSidebarExpanded }) => {
   const club = localStorage.getItem("userClub");
   const clubId = localStorage.getItem("userClubId");
 
@@ -15,7 +17,8 @@ const AdminAnno = () => {
     date: "",
     time: "",
     category: "",
-    contact: "",
+    email: "",
+    phone: "",
   });
   const [editingId, setEditingId] = useState(null);
   const [tabIndex, setTabIndex] = useState(0); // State to track the active tab
@@ -67,7 +70,8 @@ const AdminAnno = () => {
         date: "",
         time: "",
         category: "",
-        contact: "",
+        email: "",
+        phone: "",
       });
       setEditingId(null);
     }
@@ -82,7 +86,8 @@ const AdminAnno = () => {
       date: "",
       time: "",
       category: "",
-      contact: "",
+      email: "",
+      phone: "",
     });
     setEditingId(null);
   };
@@ -101,12 +106,15 @@ const AdminAnno = () => {
   const otherClubsAnnouncements = announcements.filter((item) => item.club !== club);
 
   return (
-    <div className="announcement-container" >
-      <h1 className="announcement-title"> Manage Announcements</h1>
+    <div className="admin-anno-container" >
+      <Box sx={{ padding: 5, marginLeft: isSidebarExpanded ? 0 : 10 }}>
+      <Typography variant="h4" sx={{ mb: 4, fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }} gutterBottom>
+          Manage Announcements
+        </Typography>
 
       <Button
         variant="contained"
-        color="primary"
+        id="admin-add-event"
         onClick={() => handleOpenDialog()}
         style={{ marginBottom: "20px" }}
       >
@@ -117,43 +125,46 @@ const AdminAnno = () => {
       <Tabs
         value={tabIndex}
         onChange={(e, newValue) => setTabIndex(newValue)}
-        indicatorColor="primary"
-        textColor="primary"
+        indicatorColor="#9b0302"
+        textColor="#0c2d55"
         style={{ marginBottom: "20px" }}
       >
-        <Tab label="Your Club Announcements" />
-        <Tab label="Other Clubs Announcements" />
+        <Tab id="admin-event-tabs" sx={{fontFamily: 'Montserrat, sans-serif'}} label="Your Club Announcements" />
+        <Tab id="admin-event-tabs" sx={{fontFamily: 'Montserrat, sans-serif'}} label="Other Clubs Announcements" />
       </Tabs>
 
       {/* Tab Content */}
       <Box hidden={tabIndex !== 0}>
-        <h2>Your Club Announcements</h2>
-        <div className="announcement-list">
+      <Typography variant="h5" sx={{fontFamily: 'Montserrat, sans-serif'}} gutterBottom>
+        Your Club Announcements
+      </Typography>
+        <div className="admin-anno-list">
           {currentClubAnnouncements.map((item) => (
-            <div className="announcement-card" key={item._id}>
-              <div className="announcement-header">
+            <div className="admin-anno-card" key={item._id}>
+              <div className="admin-anno-header">
                 <div>
-                  <h2 className="club-name">{item.category}</h2>
-                  <span className="announcement-category">{item.club}</span>
+                  <h2 className="club-name">{item.club}</h2>
+                  <span className="admin-anno-category">{item.category}</span>
                 </div>
               </div>
-              <p className="announcement-message">{item.message}</p>
-              <p className="announcement-date">📅 {new Date(item.date).toLocaleDateString("en-US")}</p>
-              <p className="announcement-time">
-                ⏰{" "}
+              <p className="admin-anno-message">{item.message}</p>
+              <p className="admin-anno-date"><CalendarToday sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {new Date(item.date).toLocaleDateString("en-US")}</p>
+              <p className="admin-anno-time">
+                <AccessTime sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/>{" "}
                 {new Date(`1970-01-01T${item.time}`).toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
                 })}
               </p>
-              <p className="announcement-contact">📧 {item.contact}</p>
+              <p className="admin-anno-email"><Email sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.email}</p>
+              <p className="admin-anno-phone"><Phone sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.phone}</p>
 
               {/* Edit and Delete buttons for current club */}
               <div style={{ marginTop: "10px" }}>
                 <Button
                   variant="outlined"
-                  color="primary"
+                  id="admin-event-edit"
                   size="small"
                   onClick={() => handleOpenDialog(item)}
                   style={{ marginRight: "10px" }}
@@ -162,7 +173,7 @@ const AdminAnno = () => {
                 </Button>
                 <Button
                   variant="outlined"
-                  color="error"
+                  id="admin-event-delete"
                   size="small"
                   onClick={() => handleDelete(item._id)}
                 >
@@ -175,35 +186,40 @@ const AdminAnno = () => {
       </Box>
 
       <Box hidden={tabIndex !== 1}>
-        <h2>Other Clubs Announcements</h2>
-        <div className="announcement-list">
+      <Typography variant="h5" sx={{fontFamily: 'Montserrat, sans-serif'}} gutterBottom>
+        Other Club Announcements
+      </Typography>
+        <div className="admin-anno-list">
           {otherClubsAnnouncements.map((item) => (
-            <div className="announcement-card" key={item._id}>
-              <div className="announcement-header">
+            <div className="admin-anno-card" key={item._id}>
+              <div className="admin-anno-header">
                 <div>
                   <h2 className="club-name">{item.club}</h2>
-                  <span className="announcement-category">{item.category}</span>
+                  <span className="admin-anno-category">{item.category}</span>
                 </div>
               </div>
-              <p className="announcement-message">{item.message}</p>
-              <p className="announcement-date">📅 {new Date(item.date).toLocaleDateString("en-US")}</p>
-              <p className="announcement-time">
-                ⏰{" "}
+              <p className="admin-anno-message">{item.message}</p>
+              <p className="admin-anno-date"><CalendarToday sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {new Date(item.date).toLocaleDateString("en-US")}</p>
+              <p className="admin-anno-time">
+              <AccessTime sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/>{" "}
                 {new Date(`1970-01-01T${item.time}`).toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
                 })}
               </p>
-              <p className="announcement-contact">📧 {item.contact}</p>
-            </div>
+              <p className="admin-anno-email"><Email sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.email}</p>
+              <p className="admin-anno-phone"><Phone sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.phone}</p>
+              </div>
           ))}
         </div>
       </Box>
 
       {/* Dialog for Add/Edit Form */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <DialogTitle>{editingId ? "Edit Announcement" : "Add Announcement"}</DialogTitle>
+        <DialogTitle sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px' }}>
+          {editingId ? "Edit Announcement" : "Add Announcement"}
+        </DialogTitle>
         <DialogContent>
           <form>
             <TextField
@@ -249,9 +265,18 @@ const AdminAnno = () => {
               margin="normal"
             />
             <TextField
-              name="contact"
-              label="Contact Email"
-              value={formData.contact}
+              name="email"
+              label="Email"
+              value={formData.email}
+              onChange={handleInputChange}
+              fullWidth
+              required
+              margin="normal"
+            />
+            <TextField
+              name="phone"
+              label="Phone"
+              value={formData.phone}
               onChange={handleInputChange}
               fullWidth
               required
@@ -260,14 +285,15 @@ const AdminAnno = () => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
+          <Button onClick={handleCloseDialog} id='admin-event-edit-cancel'>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
+          <Button onClick={handleSubmit} variant="contained" id='admin-event-edit-update-create'>
             {editingId ? "Update" : "Create"}
           </Button>
         </DialogActions>
       </Dialog>
+      </Box>
     </div>
   );
 };

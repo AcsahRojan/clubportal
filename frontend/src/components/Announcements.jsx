@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Announcements.css";
-import { TextField,Paper } from "@mui/material";
+import { TextField, Paper, Divider } from "@mui/material";
+import { CalendarToday, AccessTime, Email, Phone } from "@mui/icons-material"
 import axios from "axios";
 
 const Announcement = () => {
@@ -23,14 +24,15 @@ const Announcement = () => {
 
   return (
     <div className="announcement-container">
-      <h1 className="announcement-title">Announcements</h1>
+      <h1 id="announcement-title">Announcements</h1>
 
-      <div style={{ marginBottom: "20px", textAlign: "right" }}>
+      <div style={{ marginBottom: "40px", textAlign: "right" }}>
         <TextField
-         variant="standard"
+          id="annosearch"
           type="date"
+          variant="filled"
           label="Filter by date:"
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ inputLabel: {shrink: true} }}
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
         />
@@ -42,19 +44,35 @@ const Announcement = () => {
             <div className="announcement-card" key={index}>
               <div className="announcement-header">
                 <div>
-                  <h2 className="club-name">{item.category}</h2>
-                  <span className="announcement-category">{item.club}</span>
+                  <h2 className="club-name">{item.club}</h2>
+                  <span className="announcement-category">{item.category}</span>
                 </div>
               </div>
+              
               <p className="announcement-message">{item.message}</p>
-              <p className="announcement-date">📅 {item.date}</p>
-              <p className="announcement-time">⏰ {item.time}</p>
-              <p className="announcement-contact">📧 {item.contact}</p>
+              <Divider id="d" sx={{ width: '100%', height: 1, mt: 1, mb: 1 }}/>
+              
+              <p className="announcement-date">
+                <CalendarToday sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.date}
+              </p>
+              
+              <p className="announcement-time">
+                <AccessTime sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.time}
+              </p>
+              
+              <p className="announcement-email">
+                <Email sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.email}
+              </p>
+              
+              <p className="announcement-phone">
+                <Phone sx={{ width: 15, height: 15, verticalAlign: 'middle' }}/> {item.phone}
+              </p>
+
             </div>
           ))
         ) : (
           
-          <p style={{ textAlign: "center" }}>No announcements found for selected date.</p>
+          <p style={{ textAlign: "center",  }}>No announcements found for selected date.</p>
         
         )}
       </div>

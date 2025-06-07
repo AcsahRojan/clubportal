@@ -140,14 +140,14 @@ const AdminEvents = ({ isSidebarExpanded }) => {
   
   return (
    <div>
-    <Box sx={{ padding: 3, marginLeft: isSidebarExpanded ? 0 : 14 }}>
+    <Box sx={{ padding: 2.5, marginLeft: isSidebarExpanded ? 0 : 10 }}>
       <div style={{ padding: "20px" }}>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h4" sx={{ mb: 4, fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }} gutterBottom>
           Manage Events
         </Typography>
         <Button
           variant="contained"
-          color="primary"
+          id="admin-add-event"
           onClick={() => handleOpen()}
           style={{ marginBottom: "20px" }}
         >
@@ -155,28 +155,35 @@ const AdminEvents = ({ isSidebarExpanded }) => {
         </Button>
 
         {/* Tabs for sectioning */}
-        <Tabs
+        <Tabs        
           value={tabIndex}
           onChange={(e, newValue) => setTabIndex(newValue)}
-          indicatorColor="primary"
-          textColor="primary"
+          indicatorColor="#9b0302"
+          textColor="#0c2d55"
           style={{ marginBottom: "20px" }}
         >
-          <Tab label="Your Club Events" />
-          <Tab label="All Other Events" />
+          <Tab id="admin-event-tabs" sx={{fontFamily: 'Montserrat, sans-serif'}} label="Your Club Events" />
+          <Tab id="admin-event-tabs" sx={{fontFamily: 'Montserrat, sans-serif'}} label="All Other Events" />
         </Tabs>
 
         {/* Tab Content */}
-        <Box hidden={tabIndex !== 0}>
-          <Typography variant="h5" gutterBottom>
+        <Box sx={{fontFamily: 'Montserrat, sans-serif'}} hidden={tabIndex !== 0}>
+          <Typography variant="h5" sx={{fontFamily: 'Montserrat, sans-serif'}} gutterBottom>
             Your Club Events
           </Typography>
           
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))", gap: "20px" }}>
             {currentClubEvents.map((event) => (
-              <Card key={event._id} variant="outlined">
-                <CardContent>
-                  <Typography variant="h6">{event.event_title}</Typography>
+              <Card 
+              key={event._id} 
+              variant="outlined" 
+              sx={{ 
+                borderRadius: '16px', 
+                padding: 1, 
+                transition: 'all 0.3s ease-in-out', 
+                '&:hover': {backgroundColor: '#eef6ff'}}}>
+                <CardContent sx={{}}>
+                  <Typography sx={{fontFamily: 'Montserrat, sans-serif'}} variant="h6">{event.event_title}</Typography>
                   <Typography variant="body2" color="textSecondary">
                     <strong>Club:</strong> {event.event_club}
                   </Typography>
@@ -198,9 +205,9 @@ const AdminEvents = ({ isSidebarExpanded }) => {
                   <Typography variant="body2" color="textSecondary">
                     <strong>Venue:</strong> {event.event_venue}
                   </Typography>
-                  <Typography variant="body2">{event.event_description}
+                  <Typography sx={{fontFamily: 'Montserrat, sans-serif', mb: 2}} variant="body2">{event.event_description}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', flexDirection: 'column' }}>
                     <strong>Files added:</strong> 
                     <img
                       src={
@@ -216,14 +223,14 @@ const AdminEvents = ({ isSidebarExpanded }) => {
                 <CardActions>
                   <Button
                     variant="outlined"
-                    color="secondary"
+                    id="admin-event-edit"
                     onClick={() => handleOpen(event)}
                   >
                     Edit
                   </Button>
                   <Button
                     variant="outlined"
-                    color="error"
+                    id="admin-event-delete"
                     onClick={() => handleDelete(event._id)}
                   >
                     Delete
@@ -236,14 +243,14 @@ const AdminEvents = ({ isSidebarExpanded }) => {
         </Box>
 
         <Box hidden={tabIndex !== 1}>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h5" sx={{fontFamily: 'Montserrat, sans-serif'}} gutterBottom>
             All Other Events
           </Typography>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
             {allOtherEvents.map((event) => (
-              <Card key={event._id} variant="outlined">
+              <Card key={event._id} variant="outlined" sx={{ borderRadius: '16px', padding: 1}}>
                 <CardContent>
-                  <Typography variant="h6">{event.event_title}</Typography>
+                  <Typography sx={{fontFamily: 'Montserrat, sans-serif'}} variant="h6">{event.event_title}</Typography>
                   <Typography variant="body2" color="textSecondary">
                     <strong>Club:</strong> {event.event_club}
                   </Typography>
@@ -277,57 +284,57 @@ const AdminEvents = ({ isSidebarExpanded }) => {
         </Box>
 
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>
+          <DialogTitle sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px' }}>
             {editingEvent ? "Edit Event" : "Add New Event"}
           </DialogTitle>
           <DialogContent>
-  {[
-    { name: "event_title", label: "Event Title" },
-    { name: "event_date", label: "Event Date", type: "date" },
-    { name: "event_time", label: "Event Time", type: "time" },
-    { name: "event_venue", label: "Event Venue" },
-    { name: "event_description", label: "Event Description" },
-    { name: "event_image", label: "Event Image", type: "file" },
-  ].map((field) => {
-    
-    if (field.type === "file") {
-      return (       
-        <input
-          key={field.name}
-          name={field.name}
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            handleChange(e);
-            
-          }}
-          style={{ marginTop: "16px", marginBottom: "16px", width: "100%" }}
-        />
-      );
-    } else {
-      return (
-        <TextField
-          required
-          key={field.name}
-          name={field.name}
-          label={field.label}
-          value={formData[field.name]}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          type={field.type || "text"}
-          InputLabelProps={field.type ? { shrink: true } : undefined}
-        />
-      );
-    }
-  })}
-</DialogContent>
+            {[
+              { name: "event_title", label: "Event Title" },
+              { name: "event_date", label: "Event Date", type: "date" },
+              { name: "event_time", label: "Event Time", type: "time" },
+              { name: "event_venue", label: "Event Venue" },
+              { name: "event_description", label: "Event Description" },
+              { name: "event_image", label: "Event Image", type: "file" },
+            ].map((field) => {
+              
+              if (field.type === "file") {
+                return (       
+                  <input
+                    key={field.name}
+                    name={field.name}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      handleChange(e);
+                      
+                    }}
+                    style={{ marginTop: "16px", marginBottom: "16px", width: "100%" }}
+                  />
+                );
+              } else {
+                return (
+                  <TextField
+                    required
+                    key={field.name}
+                    name={field.name}
+                    label={field.label}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    type={field.type || "text"}
+                    InputLabelProps={field.type ? { shrink: true } : undefined}
+                  />
+                );
+              }
+            })}
+          </DialogContent>
 
           <DialogActions>
-            <Button onClick={handleClose} color="secondary">
+            <Button onClick={handleClose} id='admin-event-edit-cancel'>
               Cancel
             </Button>
-            <Button onClick={handleSubmit} color="primary">
+            <Button onClick={handleSubmit} id='admin-event-edit-update-create'>
               {editingEvent ? "Update" : "Create"}
             </Button>
           </DialogActions>

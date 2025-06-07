@@ -1,11 +1,9 @@
-.announcement-container {
-    max-width: 800px;
-    margin: auto;
+.admin-anno-container {
     background-color:transparent;
    
 }
   
-#announcement-title {
+#admin-anno-title {
   text-align: center;
   font-weight: 500;
   font-size: 30px;
@@ -13,18 +11,12 @@
   margin-bottom: 20px;
 }
 
-#annosearch{
-  background-color: #0c2d551e;
-  border: none;
-  border-radius: 5px;
-}
-
-.announcement-list {
+.admin-anno-list {
   display: flex;
   flex-direction: column;
 }
 
-.announcement-card {
+.admin-anno-card {
   line-height: 25px;
   margin-bottom: 50px;
   background: #ffffff;
@@ -40,7 +32,7 @@
   color: #0c2d55;
 }
 
-.announcement-category {
+.admin-anno-category {
   font-size: 0.85rem;
   color: #9b0302;
   background-color:#ffe9e9;
@@ -50,29 +42,29 @@
   margin-top: 4px;
 }
 
-.announcement-message {
+.admin-anno-message {
   margin: 0.5rem 0;
   color: #0c2d55;
 }
 
-.announcement-date,
-.announcement-email,
-.announcement-phone,
-.announcement-link {
+.admin-anno-date,
+.admin-anno-email,
+.admin-anno-phone,
+.admin-anno-link {
   font-size: 0.85rem;
   color: #0c2d55;
 }
 
-.announcement-link a {
+.admin-anno-link a {
   color: #0c2d55;
   text-decoration: none;
 }
 
-.announcement-link a:hover {
+.admin-anno-link a:hover {
   text-decoration: underline;
 }
 
-.announcement-time {
+.admin-anno-time {
   font-size: 0.85rem;
   color: #0c2d55;
 }

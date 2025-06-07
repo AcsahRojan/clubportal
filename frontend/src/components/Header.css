@@ -1,16 +1,17 @@
+
 #t{
-    background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
+    background: linear-gradient(to right, #0c2d55, #9b0302 );
 }
 
 #nav-menu{
-    background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
+    background: linear-gradient(to right, #0c2d55, #9b0302 );
     color: white;
 }
 
 #profile-menu{
-    background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
+    background: linear-gradient(to right, #0c2d55, #9b0302 );
     color: white;
 }
-#ann{
+#headlink{
     color:white
 }

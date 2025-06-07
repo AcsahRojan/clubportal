@@ -24,6 +24,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
     phone:'',
     leaders: [],
     email: '',
+    socials: [],
     photos: [],
   });
   const [clubs, setClubs] = useState([]);
@@ -66,6 +67,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
       vision: club.vision,
       phone: club.phone,
       email: club.email,
+      socials: club.socials,
       photos: [],
     });
     setOpenDialog(true);
@@ -114,15 +116,17 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
   
 
   return (
+    
     <Box
       sx={{
         display: 'flex',
         minHeight: '100vh',
         transition: 'margin-left 0.3s ease',
-        marginLeft: isSidebarExpanded ? 0 : 10,
+        marginLeft: isSidebarExpanded ? 0 : 9,
         padding: 5,
       }}
     >
+      
       <Box sx={{ flex: 1 }}>
         {clubs.map((club) => (
           <div key={club._id} >
@@ -139,73 +143,84 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
                 justifyContent: "center",
               }}/>
             </div>
-          <Divider sx={{ mb: 3 }} >
+          
+          <Divider sx={{ mt: 3, mb: 3 }} >
             <Box display="flex" justifyContent="center" alignItems="center">
-              <Typography variant="h3" sx={{ fontFamily: 'Gilda Display', textAlign: 'center', mr: 1 }}>
+              <Typography variant="h3" sx={{ fontFamily: 'Montserrat, sans-serif', textAlign: 'center', mr: 1 }}>
                 {club.name}
               </Typography>           
             </Box>
           </Divider>
+          
           <Accordion
            sx={{
-                backgroundColor: "#efebff",    
-                border: "1px solid #d1c4e9",
-                boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
-                my: 2,
-                }}>
-              <AccordionSummary expandIcon={<ExpandMore />} sx={{ padding: 2 }}>
-                 <Typography variant="h6" sx={{  fontWeight: "bold" }}>
-                     Club Info
-                   <Tooltip title="Edit Club Info">
-                     <IconButton onClick={() => handleEditClick(club)}>
-                       <Edit color="action" />
-                     </IconButton>
-                   </Tooltip>
-                 </Typography>
-              </AccordionSummary>
+            backgroundColor: "#fff",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
+            my: 5
+            }}>
+              
+            <AccordionSummary expandIcon={<ExpandMore />}>
+                <Typography variant="h6" sx={{ fontFamily: "Montserrat", fontWeight: "600" }}>
+                    Club Info
+                  <Tooltip title="Edit Club Info">
+                    <IconButton onClick={() => handleEditClick(club)}>
+                      <Edit sx={{ color: '#0c2d55'}} />
+                    </IconButton>
+                  </Tooltip>
+                </Typography>
+            </AccordionSummary>
 
-  <AccordionDetails>
-    
-    <Box>
-      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
-        <InfoOutline sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Description:</strong>&nbsp; {club.description}
-      </Typography>
+            <AccordionDetails>
+              
+              <Box sx={{ mb: 2 }}>
+                <Typography sx={{ mb: 2, alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}>
+                  <InfoOutline sx={{ verticalAlign: 'middle', width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Description:</strong>&nbsp; {club.description}
+                </Typography>
 
-      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
-        <EmojiObjectsOutlined sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Mission:</strong>&nbsp; {club.mission}
-      </Typography>
+                <Typography sx={{ mb: 2, alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}>
+                  <EmojiObjectsOutlined sx={{ verticalAlign: 'middle', width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Mission:</strong>&nbsp; {club.mission}
+                </Typography>
 
-      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
-        <Visibility sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Vision:</strong>&nbsp; {club.vision}
-      </Typography>
+                <Typography sx={{ mb: 2, alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}>
+                  <Visibility sx={{ verticalAlign: 'middle', width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Vision:</strong>&nbsp; {club.vision}
+                </Typography>
 
-      <Typography sx={{ mb: 1, display: "flex", alignItems: "center" }}>
-        <Phone sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Phone:</strong>&nbsp; {club.phone}
-      </Typography>
+                <Typography sx={{ mb: 2, display: "flex", alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}>
+                  <Phone sx={{ width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Phone:</strong>&nbsp; {club.phone}
+                </Typography>
 
-      <Typography sx={{ display: "flex", alignItems: "center" }}>
-        <Email sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Email:</strong>&nbsp; {club.email}
-      </Typography>
-      
-        
-      <Typography sx={{ display: "flex", alignItems: "center" }}  >
-        <Groups sx={{ mr: 1, color: "#8e24aa" }} />
-        <strong>Leaders:</strong> &nbsp;
-        {club.leaders.map((leader, index) => (
-        <Box key={index} component="section" sx={{ p: 2, border: '1px dashed grey', mr:2,mt:1.5}}>
-          <strong>{leader.position} :</strong> <br/> {leader.name}</Box>
-      ))}
-      </Typography>
-      
-      
-    </Box>
-  </AccordionDetails>
-</Accordion>
+                <Typography sx={{ display: "flex", alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}>
+                  <Email sx={{ width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Email:</strong>&nbsp; {club.email}
+                </Typography>
+                  
+                <Typography sx={{ display: "flex", alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}  >
+                  <Groups sx={{ width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Leaders:</strong> &nbsp;
+                  {club.leaders.map((leader, index) => (
+                  <Box key={index} component="section" sx={{ p: 1, border: '1px solid grey', borderRadius: '5px', mr: 2, mt: 1.5}}>
+                    <strong>{leader.position}: </strong> {leader.name}</Box>
+                ))}
+                </Typography>
+
+                {/*<Typography sx={{ display: "flex", alignItems: "center", fontFamily: 'Montserrat, sans-serif' }}  >
+                  <Groups sx={{ width: 20, height: 20, mr: 1, color: "#0c2d55" }} />
+                  <strong>Social Media:</strong> &nbsp;
+                  {club.socials.map((social, index) => (
+                  <Box key={index} component="section" sx={{ p: 1, border: '1px solid grey', borderRadius: '5px', mr: 2, mt: 1.5}}>
+                    <strong>{social.platform}: </strong> {social.handle}</Box>
+                ))}
+                </Typography>*/}
+                
+              </Box>
+
+            </AccordionDetails>
+            
+          </Accordion>
 
           </div>
           
@@ -213,7 +228,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
 
         {/* Edit Club Info Dialog */}
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-          <DialogTitle>Edit Club Info</DialogTitle>
+          <DialogTitle sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px' }}>Edit Club Info</DialogTitle>
           <DialogContent>
             <TextField
               fullWidth
@@ -266,13 +281,31 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
               margin="normal"
               type="email"
             />
-            Change Logo: 
+            {/*<Box component={'fieldset'}>
+            <legend>Social Media</legend>
+            <TextField
+              fullWidth
+              label="Platform"
+              name="socials"
+              value={formData.socials}
+              onChange={handleInputChange}
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Handle"
+              name="socials"
+              value={formData.socials}
+              onChange={handleInputChange}
+              margin="normal"
+            />
+            </Box>*/}
+            Change Logo:&nbsp;
             <Button
               variant="outlined"
               component="label"
-              color='secondary'
               startIcon={<AddPhotoAlternateIcon />}
-              sx={{ mt: 0}}
+              sx={{ color: '#0c2d55', mt: 2 }}
             >            
               <input
                 type="file"
@@ -285,8 +318,8 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
             
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setOpenDialog(false)} color="secondary">Cancel</Button>
-            <Button onClick={handleSubmit} color="primary">Submit</Button>
+            <Button onClick={() => setOpenDialog(false)} id="club-admin-edit-cancel">Cancel</Button>
+            <Button onClick={handleSubmit} id="club-admin-edit-submit">Submit</Button>
           </DialogActions>
         </Dialog>
 
@@ -294,7 +327,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
         <Typography
           variant="h5"
           gutterBottom
-          sx={{ textAlign: 'center', fontWeight: 'thin', mb: 4, fontFamily: 'Gilda Display', fontSize: 30 }}
+          sx={{ textAlign: 'center', fontWeight: 'thin', mt: 8, mb: 4, fontFamily: 'Montserrat', fontSize: 30 }}
         >
           Welcome club leader!
           <br />
@@ -305,7 +338,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
         <Grid container spacing={3} justifyContent="center">
           {[
             {
-              title: 'Manage Club Members',
+              title: 'Manage Members',
               description: 'View and manage club members, enrollments and more.',
               icon: <Groups sx={{ fontSize: 40, color: '#3f51b5' }} />,
               path: '/AdminMembers',
@@ -318,13 +351,13 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
             },
             {
               title: 'Announcements',
-              description: 'Create, publish and view announcements.',
+              description: 'Create, post and view announcements.',
               icon: <Campaign sx={{ fontSize: 40, color: '#f44336' }} />,
               path: '/AdminAnno',
             },
           ].map((item, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
+              <Card id="admindashcards"
                 sx={{
                   p: 5,
                   textAlign: 'center',
@@ -340,7 +373,7 @@ const AdminDashboard = ({ isSidebarExpanded }) => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     {item.description}
                   </Typography>
-                  <Button variant="outlined" fullWidth onClick={() => handleCardClick(item.path)}>
+                  <Button id="adb" variant="outlined" fullWidth onClick={() => handleCardClick(item.path)}>
                     {item.title.includes('Announcements') ? 'Post' : 'Manage'}
                   </Button>
                 </CardContent>

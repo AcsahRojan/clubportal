@@ -1,57 +1,46 @@
 .profile-container {
-  height: 95vh; /* full height of the screen */
   display: flex;
   justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
-  background: linear-gradient(to bottom right, #baf8fe, #d9cdff, #fccee5); /* optional, just to make it look nicer */
-}
-.profile-card {
-  display: flex;
-  flex-direction: row;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  background-color:linear-gradient(to bottom right, #baf8fe, #d9cdff, #fccee5);
-  padding: 30px;
-  max-width: 1000px;
-  width: 100%;
-  font-family:'Inter','Georgia', sans-serif;
+  align-items: center; /* vertical center */
 }
 
-/* Left side */
-.profile-left {
-  background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
-  color: white;
+.profile-card {
+  background-color: #ffffff7e;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  min-width: 50%;
+}
+
+/* top */
+.profile-top {
   text-align:center;
   flex: 1;
-  padding: 150px 5px;
+  border-radius: 16px;
   width: 100%;
-  position:relative;    
+  position:relative;   
+  color: #0c2d55;  
 }
 
-.profile-img {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin-bottom: 15px;
-  object-fit: cover;
-}
-
-
-/* Right side */
-.profile-right {
-  padding: 30px 50px;
+/* bottom */
+.profile-bottom {
+  margin-top: 40px;
+  text-align: center;
   width: 100%;
-  flex:1;
+  flex: 1;
 }
 
 .profile-section {
-  margin-bottom: 100px;
-  font-size:large;
+  margin-bottom: 50px;
 }
 
 .profile-section h3 {
-  font-size: 20px;
-  border-bottom: 1px solid #930e0e;
+  font-weight: 500;
+  font-size: 25px;
+  border-bottom: 2px solid #9b0302;
   padding-bottom: 5px;
   margin-bottom: 15px;
 }

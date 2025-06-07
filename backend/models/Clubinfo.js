@@ -8,6 +8,7 @@ const clubSchema = new mongoose.Schema({
     leaders: Array,
     phone:Number,
     email: String,
+    socials: Array,
     gallery: Array
   });
 

@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import './Events.css'
-import { Button, TextField, Dialog, DialogActions, DialogContent } from "@mui/material";
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import axios from "axios";
 import { useForm } from 'react-hook-form';
 
@@ -29,21 +29,23 @@ const EventCard = ({ event }) => {
 
   return (
     <div className="event-card">
-      <img src={event.event_image ? `http://localhost:3000/${event.event_image}` : 'https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-3d-style-white-background-vector-illustration-of-a-blue-megaphone-banner-for-upcoming-events-vector-png-image_47185572.jpg'} 
+      <img src={event.event_image ? `http://localhost:3000/${event.event_image}` : 'https://img.freepik.com/free-vector/mobile-testing-concept-illustration_114360-1564.jpg?t=st=1746562692~exp=1746566292~hmac=b3a34e8843ebe8b5db16b58da7ad01a4535b4393cb08d5543058e68026115638&w=1380'} 
       alt={event.event_title} className="event-image" />
       <h2>{event.event_title}</h2>
       <p><strong>Club:</strong> {event.event_club}</p>
       <p><strong>Date:</strong> {new Date(event.event_date).toLocaleDateString('en-US')}</p>
       <p><strong>Time:</strong> {event.event_time}</p>
       <p><strong>Venue:</strong> {event.event_venue}</p>
-      <p>{event.event_description}</p>
+      <p><strong>Description: </strong>{event.event_description}</p>
       <Button variant="contained" onClick={() => setOpen(true)}>Register</Button>
 
     
       <Dialog open={open} onClose={() => setOpen(false)} className="dialogbox" > 
             
         <DialogContent className="dialogcontent">
-         <h2 >Register for {event.event_title}</h2>
+        <Typography style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px', fontWeight: 500 }}>
+         Register for {event.event_title}
+        </Typography>
           <form onSubmit={handleSubmit(onSubmit)} className="eventform">
             <TextField
               label="Name"
@@ -107,8 +109,8 @@ const EventCard = ({ event }) => {
              className="eventinput"
             />
             <DialogActions>
-              <Button onClick={() => setOpen(false)} color="secondary" className="eventcancelbutton">Cancel</Button>
-              <Button type="submit" color="primary" className="eventsubmitbutton">Submit</Button>
+              <Button onClick={() => setOpen(false)} id="eventcancelbutton">Cancel</Button>
+              <Button type="submit" id="eventsubmitbutton">Submit</Button>
             </DialogActions>
           </form>
         </DialogContent>
@@ -118,7 +120,6 @@ const EventCard = ({ event }) => {
   );
 };
 const Events = () => {
-  
   
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -141,24 +142,23 @@ const Events = () => {
     event.event_title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-
   return (
     <>
     <div>
       
-      <h1 className="gg">College Club Association Events</h1>
+      <h1 className="gg">Explore All Club Events</h1>
 
-      <div style={{ margin: "20px", textAlign: "right" }}>
+      <div style={{ margin: "15px", textAlign: "center" }}>
         <TextField
-          label="Search by Club Name or Event name"
-          variant="standard"
-          color="secondary"
+          id="evsearch"
+          label="Search by club or event name"
+          variant="outlined"
+          type="search"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          fullWidth
+          sx={{ width: '70%' }}
         />
       </div>
-
 
       <div className="events-container">
         {filteredEvents.length > 0 ? (
@@ -166,7 +166,7 @@ const Events = () => {
             <EventCard key={event._id} event={event} />
           ))
         ) : (
-          <p style={{ textAlign: "center" }}>There are no upcoming events</p>
+          <p style={{ textAlign: "center" }}>No result</p>
         )}
       </div>
       

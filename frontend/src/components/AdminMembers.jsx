@@ -69,7 +69,7 @@ const AdminMembers = ({ isSidebarExpanded }) => {
       }}
     >
       {/* Header */}
-      <Typography variant="h4" sx={{ mb: 4, fontFamily: 'Gilda Display', fontWeight: 'bold' }}>
+      <Typography variant="h4" sx={{ mb: 4, fontFamily: 'Montserrat', fontWeight: '500' }}>
         Club Members
       </Typography>
 
@@ -77,18 +77,18 @@ const AdminMembers = ({ isSidebarExpanded }) => {
       <Grid container spacing={3} alignItems="center" sx={{ mb: 4 }}>
         <Grid item xs={12} md={4}>
           <Card
-            sx={{
-              background: 'linear-gradient(to right, #1976d2, #42a5f5)',
-              color: '#fff',
-              boxShadow: 3,
-              borderRadius: 3,
+            sx={{ 
+              textAlign: 'center', 
+              borderRadius: 2, 
+              backgroundColor: '#b9d9ff85', 
+              minWidth: 150 
             }}
           >
             <CardContent>
               <Typography variant="subtitle2" color="inherit">
                 Total Members
               </Typography>
-              <Typography variant="h4" fontWeight={600}>
+              <Typography variant="h3" fontFamily={'Montserrat'} fontWeight={500}>
                 {members.length}
               </Typography>
             </CardContent>
@@ -97,15 +97,16 @@ const AdminMembers = ({ isSidebarExpanded }) => {
 
         <Grid item xs={12} md={8}>
           <TextField
-            fullWidth
-            placeholder="Search members by name or department"
+            label="Search members by name or department"
             value={searchQuery}
+            type="search"
             onChange={(e) => setSearchQuery(e.target.value)}
             variant="outlined"
             sx={{
-              backgroundColor: 'white',
-              
-              boxShadow: 1,
+              width: '150%',
+              backgroundColor: '#b9d9ff85',
+              border: 'none',
+              borderRadius: '5px',
             }}
           />
         </Grid>
@@ -113,14 +114,15 @@ const AdminMembers = ({ isSidebarExpanded }) => {
 
       {/* Members Table */}
       
-        <TableContainer  component={Paper} >
+        <TableContainer  component={Paper} sx={{ borderRadius: 5, backgroundColor: 'rgb(201, 241, 216)' }}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead >
+          <TableHead sx={{ backgroundColor: 'rgb(159, 244, 190)' }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Department</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Name</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Email</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Phone</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Department</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', fontFamily: 'Montserrat' }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -135,10 +137,13 @@ const AdminMembers = ({ isSidebarExpanded }) => {
             ) : (
               filteredMembers.map((member, index) => (
                 <TableRow key={index} hover>
-                  <TableCell>{member.name}</TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.dept}</TableCell>
-                 <TableCell><Button variant='outlined' color='error' onClick={() => handleDelete(member._id)} >remove</Button></TableCell>
+                  <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{member.name}</TableCell>
+                  <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{member.email}</TableCell>
+                  <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{member.contactNumber}</TableCell>
+                  <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>{member.dept}</TableCell>
+                  <TableCell sx={{ fontFamily: 'Montserrat', fontWeight: 500 }}>
+                    <Button variant='contained' color='error' onClick={() => handleDelete(member._id)} >Remove</Button>
+                  </TableCell>
                 </TableRow>
                 
               ))

@@ -1,25 +1,25 @@
 #lh01{
-    font-family: 'Gilda Display', cursive;
+    font-family: 'Montserrat', sans-serif;
     text-align: center;
-    font-weight: 100;
+    letter-spacing: 0.1rem;
+    font-weight: 500;
     font-size:larger;
     margin-top: 40px;
     line-height: 2.0;
 }
 #lh02{
     text-align: center;
-    font-weight: 100;
+    font-weight: 500;
     margin-top: 20px;
     line-height: 2.0;
 }
 #b{
-    background: linear-gradient(to right, #000000, #3b0e76, #741a8f );
+    background: linear-gradient(to right, #0c2d55, #9b0302 ); 
 }
 #lpassword, #lemail{
-    background-color: #f2eeff;
+    background-color: #eef2ff;
     border-radius: 5px;
 }
 #logcont{
     background: transparent;
-    
 }

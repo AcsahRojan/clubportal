@@ -8,7 +8,7 @@ const clubmemberSchema= new mongoose.Schema({
     clubName:String,
     email:String
 })
-//model creation-used to call mongoose methods
-const ClubMember=mongoose.model('enrolls',clubmemberSchema)
 
+
+const ClubMember=mongoose.model('enrolls',clubmemberSchema)
 module.exports=ClubMember

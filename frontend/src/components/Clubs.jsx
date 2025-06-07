@@ -43,9 +43,6 @@ const ClubPage = () => {
       }
     };
 
-  
-
-
     fetchClubData();
     
   }, [clubId,user.email]);
@@ -99,7 +96,9 @@ const ClubPage = () => {
       
 
         <Dialog open={openDialog} onClose={handleDialogClose} fullWidth className='custom-dialog'>
-          <DialogTitle>Enroll in {clubData.name}</DialogTitle>
+          <DialogTitle sx={{ fontFamily: 'Montserrat, sans-serif', fontSize: '30px' }}>
+            Enroll in {clubData.name}
+          </DialogTitle>
           <DialogContent>
         
             <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }} >
@@ -109,7 +108,7 @@ const ClubPage = () => {
               <TextField label="Email" name="email" value={formData.email}  type="email" />
               <TextField label="Phone" name="contactNumber" value={formData.contactNumber}  />
               <TextField label="Club" name="clubName" value={formData.clubName}  />
-              <Button type="submit" variant="contained">submit</Button>
+              <Button type="submit" variant="contained" id="enrollsubmit">submit</Button>
             </Box>
           
           </DialogContent>
@@ -119,33 +118,33 @@ const ClubPage = () => {
         
         <div className="enroll-btn-container">
           <Button
-            className="enroll-btn"
+            id="enroll-btn"
             onClick={handleDialogOpen}
-          variant='contained'
+            variant='outlined'
           >
-          Enroll/register
+          Enroll
           </Button>
         </div>
        
 
         <div className="club-section">
-          <h3 className="club-section-title">Description:</h3>
+          <h3 className="club-section-title">Description</h3>
           <p className="club-section-content">{clubData.description || "No description available."}</p>
         </div>
 
         <div className="club-section">
-          <h3 className="club-section-title">Mission:</h3>
+          <h3 className="club-section-title">Mission</h3>
           <p className="club-section-content">{clubData.mission || "No mission statement available."}</p>
         </div>
 
         <div className="club-section">
-          <h3 className="club-section-title">Vision:</h3>
+          <h3 className="club-section-title">Vision</h3>
           <p className="club-section-content">{clubData.vision || "No vision statement available."}</p>
         </div>
 
         {clubData.leaders && clubData.leaders.length > 0 && (
           <div className="club-section">
-            <h2 className="club-section-title">Leaders:</h2>
+            <h2 className="club-section-title">Leaders</h2>
             <div className="leader-list">
               {clubData.leaders.map((leader, idx) => (
                 <div key={idx} className="leader-card">
@@ -157,24 +156,35 @@ const ClubPage = () => {
           </div>
         )}
 
-       
           <div className="club-section">
-            <h2 className="club-section-title">Contact Details:</h2>
-              <div  className="event-list">
-                <div className="event-card">
-                <strong>Phone:</strong> <p>{clubData.phone}</p> 
+            <h2 className="club-section-title">Contact Details</h2>
+              <div className="contact-list">
+                <div className="contact-card">
+                  <strong>Phone:</strong> <p>{clubData.phone}</p> 
                 </div>
-                <div className="event-card">              
-                <strong>Email:</strong> <p>{clubData.email}</p>  
+                <div className="contact-card">              
+                  <strong>Email:</strong> <p>{clubData.email}</p>  
                 </div>              
-                </div>
-            
+              </div>
           </div>
-        {/* )} */}
+        
+        {/*{clubData.socials && clubData.socials.length > 0 && (
+          <div className="club-section">
+            <h2 className="club-section-title">Social Media</h2>
+            <div className="social-list">
+              {clubData.socials.map((social, idx) => (
+                <div key={idx} className="social-card">
+                  <strong>{social.platform}</strong>
+                  <p>{social.handle}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )} */}
 
         {clubData.gallery && clubData.gallery.length > 0 && (
           <div className="club-section">
-            <h2 className="club-section-title">Gallery:</h2>
+            <h2 className="club-section-title">Gallery</h2>
             <ImageList sx={{ width: '100%', height: 450 }} cols={3} rowHeight={164}>
               {clubData.gallery.map((imgUrl, index) => (
                 <ImageListItem key={index}>

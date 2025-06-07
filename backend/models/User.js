@@ -10,8 +10,6 @@ const userSchema = new mongoose.Schema({
     phone:Number,
     regno:String,
     clubId: { type: mongoose.Schema.Types.ObjectId, ref: "Clubinfo" }
-
-
     
 })
 

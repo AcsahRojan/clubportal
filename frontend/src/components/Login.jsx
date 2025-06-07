@@ -7,8 +7,10 @@ import {
     Box,
     Typography,
     Divider,
+    Link,
     Container,
     Paper,
+    BottomNavigation,
     CircularProgress
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -66,10 +68,10 @@ const Login = () => {
 
     return (
         <>
-            <h1 id="lh01">COLLEGE NAME</h1>
+            <h1 id="lh01">MARIAN COLLEGE</h1>
             <h1 id="lh02">Club Portal</h1>
 
-            <Divider id="d" sx={{ width: '35%', height: 1, mt: 3 }} />
+            <Divider id="d" sx={{ width: '35%', height: 1, mt: 1 }} />
 
             <Container maxWidth="xs" sx={{
                 height: "100vh",
@@ -78,7 +80,7 @@ const Login = () => {
             }}>
                 <Paper elevation={3} sx={{ p: 4, mt: 4, mb: 4 }} id="logcont">
                     <Box sx={{ display: "flex", flexDirection: "column", alignItems: 'center' }}>
-                        <Typography component="h1" variant="h5" gutterBottom>
+                        <Typography sx={{ fontFamily: 'Montserrat, sans-serif' }} component="h1" variant="h5" gutterBottom>
                             Log In
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
@@ -136,8 +138,7 @@ const Login = () => {
                     </Box>
                 </Paper>
             </Container>
-          <footer  id="bn"><Typography>&copy; 2025 College Club Portal</Typography></footer>   
-        </>
+            </>
     );
 };
 

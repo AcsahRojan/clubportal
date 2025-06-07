@@ -11,12 +11,10 @@ import {
   Avatar,
   Tooltip,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Groups, Event, Campaign, Assessment } from '@mui/icons-material';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
+import { HomeRounded, GroupsRounded, EventRounded, CampaignRounded, LogoutRounded } from '@mui/icons-material';
 
-const AdminSidebar = () => {
+const Sidebar = () => {
   const [isSidebarExpanded, setSidebarExpanded] = React.useState(false);
 
   const toggleSidebar = () => {
@@ -32,7 +30,7 @@ const AdminSidebar = () => {
           '& .MuiDrawer-paper': {
             width: isSidebarExpanded ? 300 : 73, // Dynamic width based on expansion
             boxSizing: 'border-box',
-            background: 'linear-gradient(to bottom, #000000, #3b0e76, #741a8f )',
+            background: 'linear-gradient(to bottom, #0c2d55, #9b0302 )',
             overflowX: 'hidden', // Prevent content overflow
             transition: 'width 0.3s ease', // Smooth transition for width
           },
@@ -40,7 +38,7 @@ const AdminSidebar = () => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px 16px' }}>
           <IconButton onClick={toggleSidebar} sx={{ color: 'white' }}>
-            <MenuIcon />
+            <MenuRoundedIcon />
           </IconButton>
           {isSidebarExpanded && (
             <Box sx={{ marginTop: 5.3 }}>
@@ -49,14 +47,14 @@ const AdminSidebar = () => {
                 component="a"
                 href="#"
                 sx={{
-                  fontFamily: 'Gilda Display',
+                  fontFamily: 'Montserrat, sans-serif',
                   letterSpacing: '.1rem',
                   color: 'white',
                   textDecoration: 'none',
                   marginTop: 1,
                 }}
               >
-                COLLEGE NAME
+                MARIAN COLLEGE
               </Typography>
               <Typography
                 variant="h6"
@@ -76,7 +74,7 @@ const AdminSidebar = () => {
         
         <ListItem onClick={() => window.location.href = '/AdminDashboard'} button id="asbutton">  
             <Tooltip title="Dashboard" placement="right">
-              <HomeIcon sx={{ color: 'white', marginLeft: 1  }} />
+              <HomeRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Dashboard" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -85,7 +83,7 @@ const AdminSidebar = () => {
 
           <ListItem onClick={() => window.location.href = '/AdminMembers'} button id="asbutton">  
             <Tooltip title="Members" placement="right">
-              <Groups sx={{ color: 'white', marginLeft: 1  }} />
+              <GroupsRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Manage Members" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -94,7 +92,7 @@ const AdminSidebar = () => {
 
           <ListItem onClick={() => window.location.href = '/AdminEvents'} button id="asbutton">  
             <Tooltip title="Events" placement="right">
-              <Event sx={{ color: 'white', marginLeft: 1  }} />
+              <EventRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Manage Events" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -103,7 +101,7 @@ const AdminSidebar = () => {
 
           <ListItem onClick={() => window.location.href = '/AdminAnno'} button id="asbutton">  
             <Tooltip title="Announcements" placement="right">
-              <Campaign sx={{ color: 'white', marginLeft: 1  }} />
+              <CampaignRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Manage Announcements" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -112,7 +110,7 @@ const AdminSidebar = () => {
 
           {/* <ListItem onClick={() => window.location.href = '/AdminReports'} button id="asbutton">  
             <Tooltip title="Reports" placement="right">
-              <Assessment sx={{ color: 'white', marginLeft: 1  }} />
+              <AssessmentRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Manage Reports" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -121,7 +119,7 @@ const AdminSidebar = () => {
 
           <ListItem onClick={() => window.location.href = '/Profile'} button id="asbutton">  
             <Tooltip title="Profile" placement="right">
-              <Avatar sx={{ width: 32, height: 32, marginLeft: 0.5 }} alt="profile-img" />
+              <Avatar sx={{ width: 22, height: 22, marginLeft: 1.1 }} alt="profile-img" />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText primary="Profile" sx={{ color: 'white', marginLeft: isSidebarExpanded ? 2 : 0 }} />
@@ -137,7 +135,7 @@ const AdminSidebar = () => {
             }}
           >
             <Tooltip title="Logout" placement="right">
-              <LogoutIcon sx={{ color: 'white', marginLeft: 1  }} />
+              <LogoutRounded sx={{ color: 'white', marginLeft: 1  }} />
             </Tooltip>
             {isSidebarExpanded && (
               <ListItemText
@@ -152,4 +150,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default Sidebar;

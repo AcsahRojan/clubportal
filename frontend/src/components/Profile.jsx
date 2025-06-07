@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box} from '@mui/material';
+import axios from 'axios';
+import { Box, Avatar } from '@mui/material';
 import './Profile.css';
 
 const Profile = () => {
@@ -34,45 +35,43 @@ const Profile = () => {
   return (
     <>
     {user&&(
-     <div className='profile-container' id="body">
+     <div className='profile-container'>
       <div className="profile-card">
 
         {/* Left Panel */}
-        <div className="profile-left">
-          <img
-            src="https://www.mgp.net.au/wp-content/uploads/2023/05/150-1503945_transparent-user-png-default-user-image-png-png.png"
-            alt="Profile"
-            className="profile-img"
-          />
+        <div className="profile-top">
+          <>
+            <Avatar sx={{ width: 170, height: 170, mr: 'auto', ml: 'auto', mb: 1 }} alt="profile-img" />
+          </>
           <h1>{user.name}</h1>
           <h3>{user.role}</h3>
         </div>
 
         {/* Right Panel */}
-        <div className="profile-right">
+        <div className="profile-bottom">
           <div className="profile-section">
             <h3>Information</h3>
             <div>
               <Box style={{ textAlign: "left" }} sx={{ p: 2 }}>
-                <strong style={{ color: "grey" }}>Register No.:</strong>
+                <strong style={{ color: "black" }}>Reg. No.:</strong>
                 <span style={{ float: "right" }}>{user.regno}</span>
               </Box>
             </div>
             <div>
               <Box style={{ textAlign: "left" }} sx={{ p: 2 }}>
-                <strong style={{ color: "grey" }}>Email:</strong>
+                <strong style={{ color: "black" }}>Email:</strong>
                 <span style={{ float: "right" }}>{user.email}</span>
               </Box>
             </div>
             <div>
               <Box style={{ textAlign: "left" }} sx={{ p: 2 }}>
-                <strong style={{ color: "grey" }}>Contact No:</strong>
+                <strong style={{ color: "black" }}>Phone:</strong>
                 <span style={{ float: "right" }}>{user.contact}</span>
               </Box>
             </div>
           </div>
 
-          {/* <div className="profile-section">
+           {/*<div className="profile-section">
             <h3>Clubs Joined</h3>
             
               {clubs.map((club, index) => (
@@ -91,8 +90,7 @@ const Profile = () => {
         </div>
       </div>
       </div>
-      )}
-    <footer></footer>  
+      )}  
     </>
   );
 };
